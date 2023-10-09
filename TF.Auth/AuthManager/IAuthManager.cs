@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
-using Domain.User;
-using NotesApi.RefreshCookieAuthScheme.CacheService;
-using NotesApi.RefreshCookieAuthScheme.Token;
+using Microsoft.AspNetCore.Http;
+using TF.Auth.CacheService;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
-namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
+namespace TF.Auth.AuthManager;
 
 public interface IAuthManager
 {

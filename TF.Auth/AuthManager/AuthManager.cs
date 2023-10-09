@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using TF.Auth.CacheService;
 using TF.Auth.Cookie;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
