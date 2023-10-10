@@ -8,81 +8,51 @@ public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
 
-    private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
-
-    #region parse key
-
-        private Guid GetUserIdFromKey(string key)
-    {
-        var values = key.Split(':');
-
-        return Guid.Parse(values[0]); 
-    }
-    
-    private string GetRefreshTokenFromKey(string key)
-    {
-        var values = key.Split(':');
-
-        return values[1];
-    }
-    
-
-    #endregion
+    private string Key(IUserModel user, string refreshToken) => $"{user.Username}:{refreshToken}";
 
     public TokenCacheService(IDistributedCache cache)
     {
         _cache = cache;
     }
 
-    public async Task<ITokensModel?> GetTokens(Guid userId, string refreshToken)
+    public async Task<ITokensPair?> GetTokens(IUserModel user, string refreshToken)
     {
-        var key = Key(userId, refreshToken);
-        
-        var tokens = await _cache.GetStringAsync(key);
+        var key = Key(user, refreshToken);
+
+        var tokens = await _cache.GetAsync(key);
 
         if (tokens == null)
             return null;
 
-        return JsonSerializer.Deserialize<TokensModelModel>(tokens);
+        MemoryStream stream = new MemoryStream(tokens);
+
+        return await JsonSerializer.DeserializeAsync<TokensPair>(stream);
     }
 
-    public async Task SetTokens(Guid userId, ITokensModel tokensModel, TimeSpan refreshTokenLifeTime)
+    public async Task SetTokens(IUserModel user, ITokensPair tokensPair, TimeSpan refreshTokenLifeTime)
     {
-        var tokenLifeTime = DateTime.UtcNow.AddDays(refreshTokenLifeTime.TotalDays);
-        
-        // tokens pair can be deleted when refresh token expired
+        await SetTokens(user, tokensPair, refreshTokenLifeTime.Ticks);
+    }
+
+    public async Task SetTokens(IUserModel user, ITokensPair tokensPair, long refreshTokenLifeTime)
+    {
+        var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
+
         var options = new DistributedCacheEntryOptions()
         {
             AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
         };
 
-        var key = Key(userId, tokensModel.RefreshToken);
+        var key = Key(user, tokensPair.RefreshToken);
 
-        var value = JsonSerializer.Serialize(tokensModel);
-
-        await _cache.SetStringAsync(key, value, options);
-    }
-
-    public async Task SetTokens(Guid userId, ITokensModel tokensModel, int refreshTokenLifeTimeInDays)
-    {
-        var tokenLifeTime = DateTime.UtcNow.AddDays(refreshTokenLifeTimeInDays);
-        
-        // tokens pair can be deleted when refresh token expired
-        var options = new DistributedCacheEntryOptions()
-        {
-            AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
-        };
-
-        var key = Key(userId, tokensModel.RefreshToken);
-
-        var value = JsonSerializer.Serialize(tokensModel);
+        var value = JsonSerializer.Serialize(tokensPair);
 
         await _cache.SetStringAsync(key, value, options);
     }
 
-    public async Task DeleteTokens(Guid userId, string refreshToken)
+    public async Task DeleteTokens(IUserModel user, string refreshToken)
     {
-        var key = Key(userId, refreshToken);
+        var key = Key(user, refreshToken);
 
         await _cache.RemoveAsync(key);
     }

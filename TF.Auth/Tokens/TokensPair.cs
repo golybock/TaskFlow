@@ -1,6 +1,6 @@
 ﻿namespace TF.Auth.Tokens;
 
-public class TokensModelModel : ITokensModel
+public class TokensPair : ITokensPair
 {
     public string Token { get; set; } = null!;
 

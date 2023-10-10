@@ -11,7 +11,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
     private CookieOptions DefaultOptions() =>
         new (){Secure = true, SameSite = SameSiteMode.None};
 
-    public ITokensModel? GetTokens(HttpContext context)
+    public ITokensPair? GetTokens(HttpContext context)
     {
         string? token = GetRequestCookie(context, CookieTypes.Token);
 
@@ -20,7 +20,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         if (token == null || refreshToken == null)
             return null;
 
-        var tokens = new Tokens.TokensModelModel()
+        var tokens = new Tokens.TokensPair()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -29,7 +29,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         return tokens;
     }
 
-    public ITokensModel? GetTokens(HttpRequest request)
+    public ITokensPair? GetTokens(HttpRequest request)
     {
         string? token = GetRequestCookie(request, CookieTypes.Token);
 
@@ -38,7 +38,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         if (token == null || refreshToken == null)
             return null;
 
-        var tokens = new Tokens.TokensModelModel()
+        var tokens = new Tokens.TokensPair()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -47,28 +47,28 @@ public class CookieManager : CookieManagerBase, ICookieManager
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, ITokensModel tokensModel, int refreshTokenLifeTime)
+    public void SetTokens(HttpContext context, ITokensPair tokensPair, long refreshTokenLifeTime)
     {
         // validation lifetime from options
-        var expires = DateTime.UtcNow.AddDays(refreshTokenLifeTime);
+        var expires = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
 
-        AppendResponseCookie(context, CookieTypes.Token, tokensModel.Token, options);
-        AppendResponseCookie(context, CookieTypes.RefreshToken, tokensModel.RefreshToken, options);
+        AppendResponseCookie(context, CookieTypes.Token, tokensPair.Token, options);
+        AppendResponseCookie(context, CookieTypes.RefreshToken, tokensPair.RefreshToken, options);
     }
 
-    public void SetTokens(HttpResponse response, ITokensModel tokensModelDomain, int refreshTokenLifeTime)
+    public void SetTokens(HttpResponse response, ITokensPair tokensPairDomain, long refreshTokenLifeTime)
     {
         // validation lifetime from options
-        var expires = DateTime.UtcNow.AddDays(refreshTokenLifeTime);
+        var expires = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
 
-        AppendResponseCookie(response, CookieTypes.Token, tokensModelDomain.Token, options);
-        AppendResponseCookie(response, CookieTypes.RefreshToken, tokensModelDomain.RefreshToken, options);
+        AppendResponseCookie(response, CookieTypes.Token, tokensPairDomain.Token, options);
+        AppendResponseCookie(response, CookieTypes.RefreshToken, tokensPairDomain.RefreshToken, options);
     }
 
     public void DeleteTokens(HttpContext context)

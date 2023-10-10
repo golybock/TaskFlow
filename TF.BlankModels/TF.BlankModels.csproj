@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TF.Tools\TF.Tools.csproj" />
+    </ItemGroup>
+
 </Project>

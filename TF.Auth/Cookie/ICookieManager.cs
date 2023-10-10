@@ -5,13 +5,13 @@ namespace TF.Auth.Cookie;
 
 public interface ICookieManager
 {
-    public ITokensModel? GetTokens(HttpContext context);
+    public ITokensPair? GetTokens(HttpContext context);
 
-    public ITokensModel? GetTokens(HttpRequest request);
+    public ITokensPair? GetTokens(HttpRequest request);
 
-    public void SetTokens(HttpContext context, ITokensModel tokensModel, int refreshTokenLifeTime);
+    public void SetTokens(HttpContext context, ITokensPair tokensPair, long refreshTokenLifeTime);
 
-    public void SetTokens(HttpResponse response, ITokensModel tokensModel, int refreshTokenLifeTime);
+    public void SetTokens(HttpResponse response, ITokensPair tokensPair, long refreshTokenLifeTime);
 
     public void DeleteTokens(HttpContext context);
 

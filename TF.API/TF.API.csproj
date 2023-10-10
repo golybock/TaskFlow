@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.10" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
 
@@ -16,6 +17,21 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TF.Auth\TF.Auth.csproj" />
+      <ProjectReference Include="..\TF.BlankModels\TF.BlankModels.csproj" />
+      <ProjectReference Include="..\TF.DatabaseModels\TF.DatabaseModels.csproj" />
+      <ProjectReference Include="..\Tf.Defaults\Tf.Defaults.csproj" />
+      <ProjectReference Include="..\TF.DomainModels\TF.DomainModels.csproj" />
+      <ProjectReference Include="..\TF.Services\TF.Services.csproj" />
+      <ProjectReference Include="..\TF.Tools\TF.Tools.csproj" />
+      <ProjectReference Include="..\TF.ViewModels\TF.ViewModels.csproj" />
     </ItemGroup>
 
 </Project>

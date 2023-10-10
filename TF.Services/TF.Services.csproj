@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TF.BlankModels\TF.BlankModels.csproj" />
+      <ProjectReference Include="..\TF.DatabaseModels\TF.DatabaseModels.csproj" />
+      <ProjectReference Include="..\TF.DomainModels\TF.DomainModels.csproj" />
+      <ProjectReference Include="..\TF.ViewModels\TF.ViewModels.csproj" />
+    </ItemGroup>
+
 </Project>
