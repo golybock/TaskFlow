@@ -13,4 +13,6 @@ public class CardBlank
     public DateTime Deadline { get; set; }
 
     public IEnumerable<Int32> CardTags { get; set; } = new List<Int32>();
+
+    public IEnumerable<Guid> CardUsers { get; set; } = new List<Guid>();
 }
