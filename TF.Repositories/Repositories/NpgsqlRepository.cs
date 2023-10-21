@@ -42,6 +42,31 @@ public abstract class NpgsqlRepository
         }
     }
 
+    protected async Task<T?> GetAsync<T>(string query) where T : new()
+    {
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            await using var cmd = new NpgsqlCommand(query, connection);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            return await Reader<T>.ReadAsync(reader);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
     protected async Task<IEnumerable<T>> GetListAsync<T>(string query, NpgsqlParameter[] parameters) where T : new()
     {
         var connection = GetConnection();
@@ -65,7 +90,50 @@ public abstract class NpgsqlRepository
         }
     }
 
-    protected async Task<int> DeleteAsync(string table, string column, object param)
+    protected async Task<IEnumerable<T>> GetListAsync<T>(string query) where T : new()
+    {
+        var connection = GetConnection();
+
+        try
+        {
+            connection.Open();
+
+            await using var cmd = new NpgsqlCommand(query, connection);
+
+            var reader = await cmd.ExecuteReaderAsync();
+
+            return await Reader<T>.ReadListAsync(reader);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    protected async Task<Boolean> ExecuteAsync(string query, NpgsqlParameter[] parameters)
+    {
+        var connection = GetConnection();
+
+        try
+        {
+            connection.Open();
+
+            await using var cmd = new NpgsqlCommand(query, connection);
+
+            cmd.Parameters.AddRange(parameters);
+
+            // returns executed or not
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    protected async Task<Boolean> DeleteAsync(string table, string column, object param)
     {
         var connection = GetConnection();
 
@@ -83,12 +151,12 @@ public abstract class NpgsqlRepository
                 }
             };
 
-            return await cmd.ExecuteNonQueryAsync();
+            return await cmd.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return -1;
+            throw;
         }
         finally
         {
@@ -96,7 +164,7 @@ public abstract class NpgsqlRepository
         }
     }
 
-    protected async Task<int> DeleteCascadeAsync(string table, string column, object param)
+    protected async Task<Boolean> DeleteCascadeAsync(string table, string column, object param)
     {
         var connection = GetConnection();
 
@@ -114,12 +182,12 @@ public abstract class NpgsqlRepository
                 }
             };
 
-            return await cmd.ExecuteNonQueryAsync();
+            return await cmd.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return -1;
+            throw;
         }
         finally
         {

@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IUserRepository>(_ => new UserNpgsqlRepository(builder.Configuration.GetConnectionString("task_flow")));
+builder.Services.AddSingleton<IUserRepository>(_ => new UserRepository(builder.Configuration.GetConnectionString("task_flow")));
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
