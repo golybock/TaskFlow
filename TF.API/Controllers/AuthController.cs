@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TF.Services.Services;
+using TF.BlankModels.Models.User;
+using TF.Services.Services.Auth;
 
 namespace TF.API.Controllers
 {
@@ -19,22 +15,22 @@ namespace TF.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost]
+        [HttpPost(nameof(SignIn))]
         public async Task<IActionResult> SignIn(string login, string password)
         {
-            return await _authService.SignIn(login, password);
+            return await _authService.SignIn(login, password, HttpContext);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SignUp()
+        [HttpPost(nameof(SignUp))]
+        public async Task<IActionResult> SignUp(UserBlank userBlank)
         {
-            return await _authService.SignUp();
+            return await _authService.SignUp(userBlank, HttpContext);
         }
 
-        [HttpPost]
+        [HttpPost(nameof(SignOut))]
         public new async Task<IActionResult> SignOut()
         {
-            return await _authService.SignOut();
+            return await _authService.SignOut(HttpContext);
         }
     }
 }
