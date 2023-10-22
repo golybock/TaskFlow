@@ -7,9 +7,7 @@ namespace TF.Repositories.Repositories.Card;
 
 public class CardRepository : NpgsqlRepository, ICardRepository
 {
-    public CardRepository(string connectionString) : base(connectionString)
-    {
-    }
+    public CardRepository(string connectionString) : base(connectionString) { }
 
     public async Task<IEnumerable<CardDatabase>> GetTableCardsAsync(Guid tableId)
     {
@@ -110,12 +108,43 @@ public class CardRepository : NpgsqlRepository, ICardRepository
 
     public async Task<bool> CreateCardAsync(CardDatabase cardDatabase)
     {
-        throw new NotImplementedException();
+        string query = "insert into card(id, header, description, table_column_id, card_type_id, created_user_id, deadline) " +
+                       "values ($1, $2, $3, $4, $5, $6, $7)";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardDatabase.Id},
+            new NpgsqlParameter {Value = cardDatabase. Header},
+            new NpgsqlParameter {Value = cardDatabase. Description},
+            new NpgsqlParameter {Value = cardDatabase. TableColumnId},
+            new NpgsqlParameter {Value = cardDatabase. CardTypeId},
+            new NpgsqlParameter {Value = cardDatabase. CreatedUserId},
+            new NpgsqlParameter {Value = cardDatabase. Deadline},
+        };
+
+        return await ExecuteAsync(query, parameters);
     }
 
     public async Task<bool> UpdateCardAsync(Guid id, CardDatabase cardDatabase)
     {
-        throw new NotImplementedException();
+        string query = "update card set " +
+                       "header = $2, description = $3, " +
+                       "table_column_id = $4, card_type_id = $5, " +
+                       "deadline = $6, deleted = $7 " +
+                       "where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardDatabase.Id},
+            new NpgsqlParameter {Value = cardDatabase. Header},
+            new NpgsqlParameter {Value = cardDatabase. Description},
+            new NpgsqlParameter {Value = cardDatabase. TableColumnId},
+            new NpgsqlParameter {Value = cardDatabase. CardTypeId},
+            new NpgsqlParameter {Value = cardDatabase. Deadline},
+            new NpgsqlParameter {Value = cardDatabase. Deleted},
+        };
+
+        return await ExecuteAsync(query, parameters);
     }
 
     public async Task<bool> DeleteCardAsync(Guid id)
@@ -146,12 +175,35 @@ public class CardRepository : NpgsqlRepository, ICardRepository
 
     public async Task<bool> CreateCardCommentAsync(CardCommentsDatabase cardCommentsDatabase)
     {
-        throw new NotImplementedException();
+        string query = "insert into card_comments(card_id, user_id, comment, attachment_url) " +
+                       "values ($1, $2, $3, $4)";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardCommentsDatabase.CardId},
+            new NpgsqlParameter {Value = cardCommentsDatabase.UserId},
+            new NpgsqlParameter {Value = cardCommentsDatabase.Comment},
+            new NpgsqlParameter {Value = cardCommentsDatabase.AttachmentUrl},
+        };
+
+        return await ExecuteAsync(query, parameters);
     }
 
     public async Task<bool> UpdateCardCommentAsync(int id, CardCommentsDatabase cardCommentsDatabase)
     {
-        throw new NotImplementedException();
+        string query = "update card_comments set " +
+                       "comment = $2, attachment_url = $3, deleted = $3 " +
+                       "where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardCommentsDatabase.Id},
+            new NpgsqlParameter {Value = cardCommentsDatabase.Comment},
+            new NpgsqlParameter {Value = cardCommentsDatabase.AttachmentUrl},
+            new NpgsqlParameter {Value = cardCommentsDatabase.Deleted},
+        };
+
+        return await ExecuteAsync(query, parameters);
     }
 
     public async Task<bool> DeleteCardCommentAsync(int id)
