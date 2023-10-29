@@ -159,7 +159,7 @@ public class TokenManager : ITokenManager
         return new List<Claim>()
         {
             new Claim(ClaimTypes.Name, userModel.Username),
-            new Claim(ClaimTypes.Authentication, userModel.ToJson())
+            new Claim(ClaimTypes.Authentication, JsonSerializer.Serialize(userModel))
         };
     }
 

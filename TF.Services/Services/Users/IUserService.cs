@@ -9,13 +9,13 @@ public interface IUserService
 
     public Task<UserView?> GetUserAsync(String usernameOrEmail);
 
-    public Task<Guid> CreateUserAsync(UserBlank userDatabase);
+    public Task<Boolean> CreateUserAsync(UserBlank userBlank);
 
-    public Task<Int32> UpdateUserAsync(Guid id, UserBlank userDatabase);
+    public Task<Boolean> UpdateUserAsync(Guid id, UserBlank userBlank);
 
-    public Task<Int32> UpdateUserAsync(String usernameOrEmail, UserBlank userDatabase);
+    public Task<Boolean> UpdateUserAsync(String usernameOrEmail, UserBlank userBlank);
 
-    public Task<Int32> DeleteUserAsync(Guid id);
+    public Task<Boolean> DeleteUserAsync(Guid id);
 
-    public Task<Int32> DeleteUserAsync(String username);
+    public Task<Boolean> DeleteUserAsync(String username);
 }

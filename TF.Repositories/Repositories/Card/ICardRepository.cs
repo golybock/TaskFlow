@@ -62,9 +62,9 @@ public interface ICardRepository
 
     public Task<Boolean> BlockCardAsync(BlockedCardDatabase blockedCardDatabase);
 
-    public Task<Boolean> UnBlockCardAsync(Guid cardId);
+    public Task<Boolean> UnBlockCardByIdAsync(Guid cardId);
 
-    public Task<Boolean> UnBlockCardAsync(Int32 blockedCardId);
+    public Task<Boolean> UnBlockCardAsync(Guid blockedCardId);
 
     #endregion
 

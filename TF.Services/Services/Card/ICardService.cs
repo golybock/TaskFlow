@@ -21,11 +21,11 @@ public interface ICardService
 
     public Task<CardView?> GetCardAsync(Guid cardId);
 
-    public Task<Guid> CreateCardAsync(CardBlank cardDatabase);
+    public Task<Boolean> CreateCardAsync(CardBlank cardDatabase);
 
-    public Task<Guid> UpdateCardAsync(Guid id, CardBlank cardDatabase);
+    public Task<Boolean> UpdateCardAsync(Guid id, CardBlank cardDatabase);
 
-    public Task<Guid> DeleteCardAsync(Guid id);
+    public Task<Boolean> DeleteCardAsync(Guid id);
 
     #endregion
 
@@ -33,11 +33,11 @@ public interface ICardService
 
     public Task<IEnumerable<CardCommentView>> GetCardCommentsAsync(Guid cardId);
 
-    public Task<Int32> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase);
+    public Task<Boolean> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase);
 
-    public Task<Int32> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentsDatabase);
+    public Task<Boolean> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentsDatabase);
 
-    public Task<Int32> DeleteCardCommentAsync(Int32 id);
+    public Task<Boolean> DeleteCardCommentAsync(Int32 id);
 
     #endregion
 
@@ -47,13 +47,13 @@ public interface ICardService
 
     public Task<IEnumerable<TagView>> GetTagsAsync();
 
-    public Task<Int32> AddTagToCardAsync(Guid cardId, Int32 tagId);
+    public Task<Boolean> AddTagToCardAsync(Guid cardId, Int32 tagId);
 
-    public Task<Int32> AddTagsToCardAsync(Guid cardId, IEnumerable<Int32> tagId);
+    public Task<Boolean> AddTagsToCardAsync(Guid cardId, IEnumerable<Int32> tagId);
 
-    public Task<Int32> DeleteCardTagsAsync(Guid cardId);
+    public Task<Boolean> DeleteCardTagsAsync(Guid cardId);
 
-    public Task<Int32> DeleteCardTagsAsync(Int32 id);
+    public Task<Boolean> DeleteCardTagsAsync(Int32 id);
 
     #endregion
 
@@ -61,11 +61,11 @@ public interface ICardService
 
     public Task<BlockedCardView?> GetBlockedCardAsync(Guid cardId);
 
-    public Task<Int32> BlockCardAsync(Guid cardId, Guid userId);
+    public Task<Boolean> BlockCardAsync(Guid cardId, Guid userId);
 
-    public Task<Int32> UnBlockCardAsync(Guid cardId);
+    public Task<Boolean> UnBlockCardByIdAsync(Guid cardId);
 
-    public Task<Int32> UnBlockCardAsync(Int32 blockedCardId);
+    public Task<Boolean> UnBlockCardAsync(Guid blockedCardId);
 
     #endregion
 
@@ -75,19 +75,21 @@ public interface ICardService
 
     public Task<IEnumerable<CardTypeView>?> GetCardTypesAsync();
 
+    public Task<Boolean> CreateCardTypeAsync(CardTypeBlank cardTypeBlank);
+
     #endregion
 
     #region CardUser
 
     public Task<IEnumerable<UserView>> GetCardUsersAsync(Guid cardId);
 
-    public Task<Int32> AddCardUserAsync(Guid cardId, Guid userId);
+    public Task<Boolean> AddCardUserAsync(Guid cardId, Guid userId);
 
-    public Task<Int32> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds);
+    public Task<Boolean> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds);
 
-    public Task<Int32> DeleteCardUserAsync(Guid cardId, Guid userId);
+    public Task<Boolean> DeleteCardUserAsync(Guid cardId, Guid userId);
 
-    public Task<Int32> DeleteCardUserAsync(Int32 id);
+    public Task<Boolean> DeleteCardUserAsync(Int32 id);
 
     #endregion
 }

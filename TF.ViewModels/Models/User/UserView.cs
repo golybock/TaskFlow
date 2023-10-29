@@ -1,8 +1,11 @@
-﻿using TF.Tools.Enums;
+﻿using TF.Auth.Tokens;
+using TF.DatabaseModels.Models.User;
+using TF.DomainModels.Models.User;
+using TF.Tools.Enums;
 
 namespace TF.ViewModels.Models.User;
 
-public class UserView
+public class UserView : IUserModel
 {
     public Guid Id { get; set; }
 
@@ -17,4 +20,15 @@ public class UserView
     public String? ImageUrl { get; set; }
 
     public Role Role { get; set; }
+
+    public UserView(UserDomain userDomain)
+    {
+        Id = userDomain.Id;
+        FullName = userDomain.FullName;
+        Username = userDomain.Username;
+        Email = userDomain.Email;
+        Letters = userDomain.Letters;
+        ImageUrl = userDomain.ImageUrl;
+        Role = userDomain.Role;
+    }
 }

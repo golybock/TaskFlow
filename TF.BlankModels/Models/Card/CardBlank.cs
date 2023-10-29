@@ -8,6 +8,8 @@ public class CardBlank
 
     public Guid TableColumnId { get; set; }
 
+    public Guid PreviousCardId { get; set; }
+
     public Int32 CardTypeId { get; set; }
 
     public DateTime Deadline { get; set; }

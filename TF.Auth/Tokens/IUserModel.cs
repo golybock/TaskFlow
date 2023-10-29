@@ -3,6 +3,4 @@
 public interface IUserModel
 {
     public string Username { get; set; }
-
-    public string ToJson();
 }

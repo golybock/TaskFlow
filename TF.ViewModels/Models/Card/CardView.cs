@@ -21,6 +21,8 @@ public class CardView
 
     public DateTime Deadline { get; set; }
 
+    public Guid PreviousCardId { get; set; }
+
     public BlockedCardView? Block { get; set; }
 
     public IEnumerable<CardCommentView> Comments { get; set; } = new List<CardCommentView>();

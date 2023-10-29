@@ -1,4 +1,5 @@
-﻿using TF.Tools.Enums;
+﻿using TF.DatabaseModels.Models.User;
+using TF.Tools.Enums;
 
 namespace TF.DomainModels.Models.User;
 
@@ -17,4 +18,15 @@ public class UserDomain
     public String? ImageUrl { get; set; }
 
     public Role Role { get; set; }
+
+    public UserDomain(UserDatabase userDatabase)
+    {
+        Id = userDatabase.Id;
+        FullName = userDatabase.FullName;
+        Username = userDatabase.Username;
+        Email = userDatabase.Email;
+        Letters = userDatabase.Letters;
+        ImageUrl = userDatabase.ImageUrl;
+        Role = userDatabase.RoleId;
+    }
 }

@@ -2,15 +2,15 @@
 
 public class BlockedCardDatabase
 {
-    public Int32 Id { get; set; }
+    public Guid Id { get; set; }
 
     public Guid CardId { get; set; }
 
     public String? Comment { get; set; }
 
-    public Guid BlockedUserId { get; set; }
+    public Guid UserId { get; set; }
 
-    public DateTime StartBlockTimestamp { get; set; }
+    public DateTime StartBlock { get; set; }
 
-    public DateTime EndBlockTimestamp { get; set; }
+    public DateTime EndBlock { get; set; }
 }

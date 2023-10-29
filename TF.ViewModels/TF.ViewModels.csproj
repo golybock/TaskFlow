@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TF.Auth\TF.Auth.csproj" />
+      <ProjectReference Include="..\TF.DomainModels\TF.DomainModels.csproj" />
       <ProjectReference Include="..\TF.Tools\TF.Tools.csproj" />
     </ItemGroup>
 

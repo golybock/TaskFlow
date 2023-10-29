@@ -15,6 +15,7 @@ public class CardService : ICardService
         _cardRepository = cardRepository;
     }
 
+
     public async Task<IEnumerable<CardView>> GetTableCardsAsync(Guid tableId)
     {
         throw new NotImplementedException();
@@ -45,17 +46,17 @@ public class CardService : ICardService
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> CreateCardAsync(CardBlank cardDatabase)
+    public async Task<bool> CreateCardAsync(CardBlank cardDatabase)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> UpdateCardAsync(Guid id, CardBlank cardDatabase)
+    public async Task<bool> UpdateCardAsync(Guid id, CardBlank cardDatabase)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> DeleteCardAsync(Guid id)
+    public async Task<bool> DeleteCardAsync(Guid id)
     {
         throw new NotImplementedException();
     }
@@ -65,17 +66,17 @@ public class CardService : ICardService
         throw new NotImplementedException();
     }
 
-    public async Task<int> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase)
+    public async Task<bool> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateCardCommentAsync(int id, CardCommentBlank cardCommentsDatabase)
+    public async Task<bool> UpdateCardCommentAsync(int id, CardCommentBlank cardCommentsDatabase)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteCardCommentAsync(int id)
+    public async Task<bool> DeleteCardCommentAsync(int id)
     {
         throw new NotImplementedException();
     }
@@ -90,22 +91,22 @@ public class CardService : ICardService
         throw new NotImplementedException();
     }
 
-    public async Task<int> AddTagToCardAsync(Guid cardId, int tagId)
+    public async Task<bool> AddTagToCardAsync(Guid cardId, int tagId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> AddTagsToCardAsync(Guid cardId, IEnumerable<int> tagId)
+    public async Task<bool> AddTagsToCardAsync(Guid cardId, IEnumerable<int> tagId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteCardTagsAsync(Guid cardId)
+    public async Task<bool> DeleteCardTagsAsync(Guid cardId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteCardTagsAsync(int id)
+    public async Task<bool> DeleteCardTagsAsync(int id)
     {
         throw new NotImplementedException();
     }
@@ -115,17 +116,17 @@ public class CardService : ICardService
         throw new NotImplementedException();
     }
 
-    public async Task<int> BlockCardAsync(Guid cardId, Guid userId)
+    public async Task<bool> BlockCardAsync(Guid cardId, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UnBlockCardAsync(Guid cardId)
+    public async Task<bool> UnBlockCardByIdAsync(Guid cardId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UnBlockCardAsync(int blockedCardId)
+    public async Task<bool> UnBlockCardAsync(Guid blockedCardId)
     {
         throw new NotImplementedException();
     }
@@ -140,27 +141,32 @@ public class CardService : ICardService
         throw new NotImplementedException();
     }
 
+    public async Task<bool> CreateCardTypeAsync(CardTypeBlank cardTypeBlank)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<UserView>> GetCardUsersAsync(Guid cardId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> AddCardUserAsync(Guid cardId, Guid userId)
+    public async Task<bool> AddCardUserAsync(Guid cardId, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds)
+    public async Task<bool> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteCardUserAsync(Guid cardId, Guid userId)
+    public async Task<bool> DeleteCardUserAsync(Guid cardId, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteCardUserAsync(int id)
+    public async Task<bool> DeleteCardUserAsync(int id)
     {
         throw new NotImplementedException();
     }

@@ -21,6 +21,8 @@ public class CardDomain
 
     public DateTime Deadline { get; set; }
 
+    public Guid PreviousCardId { get; set; }
+
     public BlockedCardDomain? Block { get; set; }
 
     public IEnumerable<CardCommentDomain> Comments { get; set; } = new List<CardCommentDomain>();

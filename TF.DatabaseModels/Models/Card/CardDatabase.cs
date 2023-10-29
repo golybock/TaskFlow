@@ -14,6 +14,8 @@ public class CardDatabase
 
     public Guid CreatedUserId { get; set; }
 
+    public Guid PreviousCardId { get; set; }
+
     public DateTime CreatedTimestamp { get; set; }
 
     public DateTime Deadline { get; set; }

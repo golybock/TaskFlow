@@ -13,21 +13,21 @@ public interface IWorkspaceService
 
     public Task<IEnumerable<TableColumnView>> GetTableColumnsAsync(Guid tableId);
 
-    public Task<Guid> CreateWorkspaceAsync(WorkspaceBlank workspaceDatabase, Guid userId);
+    public Task<Boolean> CreateWorkspaceAsync(WorkspaceBlank workspaceBlank, Guid userId);
 
-    public Task<Guid> CreateWorkspaceTableAsync(WorkspaceTableBlank workspaceDatabase, Guid userId);
+    public Task<Boolean> CreateWorkspaceTableAsync(WorkspaceTableBlank workspaceTableBlank, Guid userId);
 
-    public Task<Guid> CreateTableColumnAsync(TableColumnBlank tableColumnDatabase, Guid userId);
+    public Task<Boolean> CreateTableColumnAsync(TableColumnBlank tableColumnBlank, Guid userId);
 
-    public Task<Int32> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceDatabase, Guid userId);
+    public Task<Boolean> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceBlank, Guid userId);
 
-    public Task<Int32> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceDatabase, Guid userId);
+    public Task<Boolean> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceTableBlank, Guid userId);
 
-    public Task<Int32> UpdateTableColumnAsync(Guid id, TableColumnBlank tableColumnDatabase, Guid userId);
+    public Task<Boolean> UpdateTableColumnAsync(Guid id, TableColumnBlank tableColumnBlank, Guid userId);
 
-    public Task<Int32> DeleteWorkspaceAsync(Guid id);
+    public Task<Boolean> DeleteWorkspaceAsync(Guid id);
 
-    public Task<Int32> DeleteWorkspaceTableAsync(Guid id);
+    public Task<Boolean> DeleteWorkspaceTableAsync(Guid id);
 
-    public Task<Int32> DeleteTableColumnAsync(Guid id);
+    public Task<Boolean> DeleteTableColumnAsync(Guid id);
 }

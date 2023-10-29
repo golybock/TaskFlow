@@ -308,23 +308,23 @@ public class CardRepository : NpgsqlRepository, ICardRepository
 
     public async Task<bool> BlockCardAsync(BlockedCardDatabase blockedCardDatabase)
     {
-        string query = "insert into blocked_card(card_id, comment, blocked_user_id, end_block_timestamp) " +
+        string query = "insert into blocked_card(card_id, comment, user_id, end_block) " +
                        "values ($1, $2, $3, $4)";
 
         var parameters = new[]
         {
             new NpgsqlParameter {Value = blockedCardDatabase.CardId},
             new NpgsqlParameter {Value = blockedCardDatabase.Comment},
-            new NpgsqlParameter {Value = blockedCardDatabase.BlockedUserId},
-            new NpgsqlParameter {Value = blockedCardDatabase.EndBlockTimestamp}
+            new NpgsqlParameter {Value = blockedCardDatabase.UserId},
+            new NpgsqlParameter {Value = blockedCardDatabase.EndBlock}
         };
 
         return await ExecuteAsync(query, parameters);
     }
 
-    public async Task<bool> UnBlockCardAsync(Guid cardId)
+    public async Task<bool> UnBlockCardByIdAsync(Guid cardId)
     {
-        string query = "update blocked_card set end_block_timestamp = $2 " +
+        string query = "update blocked_card set end_block = $2 " +
                        "where card_id = $1";
 
         // todo очень плохо, нужно передавать дату как параметр
@@ -337,9 +337,24 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         return await ExecuteAsync(query, parameters);
     }
 
+    public async Task<bool> UnBlockCardAsync(Guid blockedCardId)
+    {
+        string query = "update blocked_card set end_block = $2 " +
+                       "where id = $1";
+
+        // todo очень плохо, нужно передавать дату как параметр
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = blockedCardId},
+            new NpgsqlParameter {Value = DateTime.UtcNow},
+        };
+
+        return await ExecuteAsync(query, parameters);
+    }
+
     public async Task<bool> UnBlockCardAsync(int blockedCardId)
     {
-        string query = "update blocked_card set end_block_timestamp = $2 " +
+        string query = "update blocked_card set end_block = $2 " +
                        "where id = $1";
 
         // todo очень плохо, нужно передавать дату как параметр

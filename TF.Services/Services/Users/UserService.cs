@@ -13,6 +13,7 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+
     public async Task<UserView?> GetUserAsync(Guid id)
     {
         throw new NotImplementedException();
@@ -23,27 +24,27 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> CreateUserAsync(UserBlank userDatabase)
+    public async Task<bool> CreateUserAsync(UserBlank userBlank)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateUserAsync(Guid id, UserBlank userDatabase)
+    public async Task<bool> UpdateUserAsync(Guid id, UserBlank userBlank)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateUserAsync(string usernameOrEmail, UserBlank userDatabase)
+    public async Task<bool> UpdateUserAsync(string usernameOrEmail, UserBlank userBlank)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteUserAsync(Guid id)
+    public async Task<bool> DeleteUserAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteUserAsync(string username)
+    public async Task<bool> DeleteUserAsync(string username)
     {
         throw new NotImplementedException();
     }

@@ -1,10 +1,18 @@
 ﻿using TF.BlankModels.Models.Workspace;
+using TF.Repositories.Repositories.Workspace;
 using TF.ViewModels.Models.Workspace;
 
 namespace TF.Services.Services.Workspace;
 
 public class WorkspaceService : IWorkspaceService
 {
+    private readonly IWorkspaceRepository _workspaceRepository;
+
+    public WorkspaceService(IWorkspaceRepository workspaceRepository)
+    {
+        _workspaceRepository = workspaceRepository;
+    }
+
     public async Task<IEnumerable<TableColumnView>> GetWorkspaceAsync(Guid id)
     {
         throw new NotImplementedException();
@@ -25,47 +33,47 @@ public class WorkspaceService : IWorkspaceService
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> CreateWorkspaceAsync(WorkspaceBlank workspaceDatabase, Guid userId)
+    public async Task<bool> CreateWorkspaceAsync(WorkspaceBlank workspaceBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> CreateWorkspaceTableAsync(WorkspaceTableBlank workspaceDatabase, Guid userId)
+    public async Task<bool> CreateWorkspaceTableAsync(WorkspaceTableBlank workspaceTableBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Guid> CreateTableColumnAsync(TableColumnBlank tableColumnDatabase, Guid userId)
+    public async Task<bool> CreateTableColumnAsync(TableColumnBlank tableColumnBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceDatabase, Guid userId)
+    public async Task<bool> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceDatabase, Guid userId)
+    public async Task<bool> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceTableBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> UpdateTableColumnAsync(Guid id, TableColumnBlank tableColumnDatabase, Guid userId)
+    public async Task<bool> UpdateTableColumnAsync(Guid id, TableColumnBlank tableColumnBlank, Guid userId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteWorkspaceAsync(Guid id)
+    public async Task<bool> DeleteWorkspaceAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteWorkspaceTableAsync(Guid id)
+    public async Task<bool> DeleteWorkspaceTableAsync(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<int> DeleteTableColumnAsync(Guid id)
+    public async Task<bool> DeleteTableColumnAsync(Guid id)
     {
         throw new NotImplementedException();
     }
