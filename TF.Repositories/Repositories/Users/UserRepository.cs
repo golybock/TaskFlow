@@ -45,7 +45,7 @@ public class UserRepository : NpgsqlRepository, IUserRepository
             new NpgsqlParameter{Value = userDatabase.Password},
             new NpgsqlParameter{Value = userDatabase.Letters},
             new NpgsqlParameter{Value = userDatabase.ImageUrl},
-            new NpgsqlParameter{Value = (object) userDatabase.RoleId}
+            new NpgsqlParameter{Value = userDatabase.RoleId}
         };
 
         return await ExecuteAsync(query, parameters);
@@ -67,7 +67,7 @@ public class UserRepository : NpgsqlRepository, IUserRepository
             new NpgsqlParameter{Value = userDatabase.Password},
             new NpgsqlParameter{Value = userDatabase.Letters},
             new NpgsqlParameter{Value = userDatabase.ImageUrl},
-            new NpgsqlParameter{Value = (object) userDatabase.RoleId}
+            new NpgsqlParameter{Value = userDatabase.RoleId}
         };
 
         return await ExecuteAsync(query, parameters);

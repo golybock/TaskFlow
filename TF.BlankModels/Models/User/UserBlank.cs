@@ -13,7 +13,5 @@ public class UserBlank
 
     public String? Password { get; set; }
 
-    public String? Letters { get; set; }
-
     public String? ImageUrl { get; set; }
 }

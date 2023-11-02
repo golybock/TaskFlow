@@ -12,5 +12,5 @@ public interface IAuthService
 
     public Task<IActionResult> SignOut(HttpContext context);
 
-    public Task<byte[]> HashAsync(string value);
+    protected Task<byte[]> HashAsync(string value);
 }

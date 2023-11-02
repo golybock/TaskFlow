@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TF.Auth.AuthManager;
 using TF.BlankModels.Models.User;
+using TF.DatabaseModels.Models.User;
 using TF.DomainModels.Models.User;
 using TF.Repositories.Repositories.Users;
+using TF.Tools.Enums;
 using TF.ViewModels.Models.User;
 
 namespace TF.Services.Services.Auth;
 
+// todo refactor
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
@@ -57,18 +60,54 @@ public class AuthService : IAuthService
         if (userBlank.Password == null)
             return new BadRequestObjectResult("Password required");
 
-        var hashedPassword = await HashAsync(userBlank.Password);
+        var user = await CreateUserDatabaseAsync(userBlank);
 
-        // todo refactor
-        //
-        // await _authManager.SignInAsync(context, userView);
+        var userView = new UserView(new UserDomain(user));
+
+        await _authManager.SignInAsync(context, userView);
 
         return new OkResult();
     }
 
+    private async Task<UserDatabase?> CreateUserDatabaseAsync(UserBlank userBlank)
+    {
+        var hashedPassword = await HashAsync(userBlank.Password!);
+
+        var letters = GetUserLetters(userBlank.FullName);
+
+        var userDB = new UserDatabase(
+            Guid.NewGuid(),
+            userBlank.FullName,
+            userBlank.UserName,
+            userBlank.Email,
+            hashedPassword,
+            letters,
+            userBlank.ImageUrl,
+            Role.Admin,
+            false
+        );
+
+        var res = await _userRepository.CreateUserAsync(userDB);
+
+        if (res)
+        {
+            return userDB;
+        }
+
+        return null;
+    }
+
+    private string GetUserLetters(string value)
+    {
+        return value[0].ToString() + value[1].ToString();
+    }
+
     public async Task<IActionResult> SignOut(HttpContext context)
     {
-        throw new NotImplementedException();
+        await _authManager.SignOutAsync(context);
+
+        // todo add url to login page
+        return new RedirectResult("");
     }
 
     public async Task<byte[]> HashAsync(string value)
