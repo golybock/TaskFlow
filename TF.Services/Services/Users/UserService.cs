@@ -1,5 +1,10 @@
-﻿using TF.BlankModels.Models.User;
+﻿using Microsoft.AspNetCore.Mvc;
+using TF.BlankModels.Models.User;
+using TF.DatabaseModels.Models.User;
+using TF.DomainModels.Models.User;
 using TF.Repositories.Repositories.Users;
+using TF.Tools.Crypto;
+using TF.Tools.Enums;
 using TF.ViewModels.Models.User;
 
 namespace TF.Services.Services.Users;
@@ -13,39 +18,89 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<IActionResult> GetUserAsync(Guid id)
+    {
+        var user = await _userRepository.GetUserAsync(id);
 
-    public async Task<UserView?> GetUserAsync(Guid id)
+        if (user == null)
+            return null;
+
+        return new UserView(new UserDomain(user));
+    }
+
+    public async Task<IActionResult> GetUserAsync(string usernameOrEmail)
+    {
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return null;
+
+        return new UserView(new UserDomain(user));
+    }
+
+    // todo refactor
+    // todo validate
+    public async Task<IActionResult> CreateUserAsync(UserBlank userBlank)
+    {
+        return (await CreateUserDatabaseAsync(userBlank)) != null;
+    }
+
+    public async Task<IActionResult> UpdateUserAsync(Guid id, UserBlank userBlank)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<UserView?> GetUserAsync(string usernameOrEmail)
+    public async Task<IActionResult> UpdateUserAsync(string usernameOrEmail, UserBlank userBlank)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<bool> CreateUserAsync(UserBlank userBlank)
+    public async Task<IActionResult> DeleteUserAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _userRepository.DeleteUserAsync(id);
     }
 
-    public async Task<bool> UpdateUserAsync(Guid id, UserBlank userBlank)
+    public async Task<IActionResult> DeleteUserAsync(string username)
     {
-        throw new NotImplementedException();
+        return await _userRepository.DeleteUserAsync(username);
     }
 
-    public async Task<bool> UpdateUserAsync(string usernameOrEmail, UserBlank userBlank)
+    private Task<byte[]> HashAsync(string value)
     {
-        throw new NotImplementedException();
+        return Crypto.HashSha512Async(value);
     }
 
-    public async Task<bool> DeleteUserAsync(Guid id)
+
+    private string GetUserLetters(string value)
     {
-        throw new NotImplementedException();
+        return $"{value.ElementAt(0)}{value.ElementAt(1)}";
     }
 
-    public async Task<bool> DeleteUserAsync(string username)
+    private async Task<UserDatabase?> CreateUserDatabaseAsync(UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        var hashedPassword = await HashAsync(userBlank.Password!);
+
+        var letters = GetUserLetters(userBlank.FullName);
+
+        var userDB = new UserDatabase(
+            Guid.NewGuid(),
+            userBlank.FullName,
+            userBlank.UserName,
+            userBlank.Email,
+            hashedPassword,
+            letters,
+            userBlank.ImageUrl,
+            Role.Admin,
+            false
+        );
+
+        var res = await _userRepository.CreateUserAsync(userDB);
+
+        if (res)
+        {
+            return userDB;
+        }
+
+        return null;
     }
 }

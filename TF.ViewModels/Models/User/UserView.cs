@@ -2,6 +2,7 @@
 using TF.DatabaseModels.Models.User;
 using TF.DomainModels.Models.User;
 using TF.Tools.Enums;
+using TF.Tools.Extensions;
 
 namespace TF.ViewModels.Models.User;
 
@@ -19,7 +20,7 @@ public class UserView : IUserModel
 
     public String? ImageUrl { get; set; }
 
-    public Role Role { get; set; }
+    public string? Role { get; set; }
 
     public UserView(UserDomain userDomain)
     {
@@ -29,6 +30,6 @@ public class UserView : IUserModel
         Email = userDomain.Email;
         Letters = userDomain.Letters;
         ImageUrl = userDomain.ImageUrl;
-        Role = userDomain.Role;
+        Role = userDomain.Role.GetDisplayName();
     }
 }

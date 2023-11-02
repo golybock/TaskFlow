@@ -20,10 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\TF.Auth\TF.Auth.csproj" />
       <ProjectReference Include="..\TF.BlankModels\TF.BlankModels.csproj" />
       <ProjectReference Include="..\TF.DatabaseModels\TF.DatabaseModels.csproj" />

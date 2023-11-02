@@ -1,4 +1,5 @@
-﻿using TF.BlankModels.Models.Card;
+﻿using Microsoft.AspNetCore.Mvc;
+using TF.BlankModels.Models.Card;
 using TF.ViewModels.Models.Card;
 using TF.ViewModels.Models.Card.CardAttributes;
 using TF.ViewModels.Models.User;
@@ -9,87 +10,87 @@ public interface ICardService
 {
     #region Card
 
-    public Task<IEnumerable<CardView>> GetTableCardsAsync(Guid tableId);
+    public Task<IActionResult> GetTableCardsAsync(Guid tableId);
 
-    public Task<IEnumerable<CardView>> GetTableCardsAsync(Guid tableId, IEnumerable<Int32> cardTypeId);
+    public Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<Int32> cardTypeId);
 
-    public Task<IEnumerable<CardView>> GetTableCardsAsync(Guid tableId, IEnumerable<Int32> cardTypeIds, IEnumerable<Guid> userIds);
+    public Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<Int32> cardTypeIds, IEnumerable<Guid> userIds);
 
-    public Task<IEnumerable<CardView>> GetWorkspaceCardsAsync(Guid workspaceId);
+    public Task<IActionResult> GetWorkspaceCardsAsync(Guid workspaceId);
 
-    public Task<IEnumerable<CardView>> GetUserCardsAsync(Guid userId);
+    public Task<IActionResult> GetUserCardsAsync(Guid userId);
 
-    public Task<CardView?> GetCardAsync(Guid cardId);
+    public Task<IActionResult> GetCardAsync(Guid cardId);
 
-    public Task<Boolean> CreateCardAsync(CardBlank cardDatabase);
+    public Task<IActionResult> CreateCardAsync(CardBlank cardDatabase);
 
-    public Task<Boolean> UpdateCardAsync(Guid id, CardBlank cardDatabase);
+    public Task<IActionResult> UpdateCardAsync(Guid id, CardBlank cardDatabase);
 
-    public Task<Boolean> DeleteCardAsync(Guid id);
+    public Task<IActionResult> DeleteCardAsync(Guid id);
 
     #endregion
 
     #region CardComment
 
-    public Task<IEnumerable<CardCommentView>> GetCardCommentsAsync(Guid cardId);
+    public Task<IActionResult> GetCardCommentsAsync(Guid cardId);
 
-    public Task<Boolean> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase);
+    public Task<IActionResult> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase);
 
-    public Task<Boolean> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentsDatabase);
+    public Task<IActionResult> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentsDatabase);
 
-    public Task<Boolean> DeleteCardCommentAsync(Int32 id);
+    public Task<IActionResult> DeleteCardCommentAsync(Int32 id);
 
     #endregion
 
     #region CardTags
 
-    public Task<IEnumerable<TagView>> GetCardTagsAsync(Guid cardId);
+    public Task<IActionResult> GetCardTagsAsync(Guid cardId);
 
-    public Task<IEnumerable<TagView>> GetTagsAsync();
+    public Task<IActionResult> GetTagsAsync();
 
-    public Task<Boolean> AddTagToCardAsync(Guid cardId, Int32 tagId);
+    public Task<IActionResult> AddTagToCardAsync(Guid cardId, Int32 tagId);
 
-    public Task<Boolean> AddTagsToCardAsync(Guid cardId, IEnumerable<Int32> tagId);
+    public Task<IActionResult> AddTagsToCardAsync(Guid cardId, IEnumerable<Int32> tagId);
 
-    public Task<Boolean> DeleteCardTagsAsync(Guid cardId);
+    public Task<IActionResult> DeleteCardTagsAsync(Guid cardId);
 
-    public Task<Boolean> DeleteCardTagsAsync(Int32 id);
+    public Task<IActionResult> DeleteCardTagsAsync(Int32 id);
 
     #endregion
 
     #region BlockCard
 
-    public Task<BlockedCardView?> GetBlockedCardAsync(Guid cardId);
+    public Task<IActionResult> GetBlockedCardAsync(Guid cardId);
 
-    public Task<Boolean> BlockCardAsync(Guid cardId, Guid userId);
+    public Task<IActionResult> BlockCardAsync(Guid cardId, Guid userId);
 
-    public Task<Boolean> UnBlockCardByIdAsync(Guid cardId);
+    public Task<IActionResult> UnBlockCardByIdAsync(Guid cardId);
 
-    public Task<Boolean> UnBlockCardAsync(Guid blockedCardId);
+    public Task<IActionResult> UnBlockCardAsync(Guid blockedCardId);
 
     #endregion
 
     #region CardType
 
-    public Task<CardTypeView?> GetCardTypeAsync(Int32 cardTypeId);
+    public Task<IActionResult> GetCardTypeAsync(Int32 cardTypeId);
 
-    public Task<IEnumerable<CardTypeView>?> GetCardTypesAsync();
+    public Task<IActionResult> GetCardTypesAsync();
 
-    public Task<Boolean> CreateCardTypeAsync(CardTypeBlank cardTypeBlank);
+    public Task<IActionResult> CreateCardTypeAsync(CardTypeBlank cardTypeBlank);
 
     #endregion
 
     #region CardUser
 
-    public Task<IEnumerable<UserView>> GetCardUsersAsync(Guid cardId);
+    public Task<IActionResult> GetCardUsersAsync(Guid cardId);
 
-    public Task<Boolean> AddCardUserAsync(Guid cardId, Guid userId);
+    public Task<IActionResult> AddCardUserAsync(Guid cardId, Guid userId);
 
-    public Task<Boolean> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds);
+    public Task<IActionResult> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds);
 
-    public Task<Boolean> DeleteCardUserAsync(Guid cardId, Guid userId);
+    public Task<IActionResult> DeleteCardUserAsync(Guid cardId, Guid userId);
 
-    public Task<Boolean> DeleteCardUserAsync(Int32 id);
+    public Task<IActionResult> DeleteCardUserAsync(Int32 id);
 
     #endregion
 }

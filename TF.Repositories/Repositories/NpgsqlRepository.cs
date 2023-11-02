@@ -3,11 +3,11 @@ using TF.Repositories.Reader;
 
 namespace TF.Repositories.Repositories;
 
-public abstract class NpgsqlRepository
+public class NpgsqlRepository
 {
     private readonly string? _connectionString;
 
-    protected NpgsqlRepository(string connectionString)
+    public NpgsqlRepository(string connectionString)
     {
         _connectionString = connectionString;
     }

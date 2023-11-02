@@ -7,6 +7,7 @@ using TF.BlankModels.Models.User;
 using TF.DatabaseModels.Models.User;
 using TF.DomainModels.Models.User;
 using TF.Repositories.Repositories.Users;
+using TF.Tools.Crypto;
 using TF.Tools.Enums;
 using TF.ViewModels.Models.User;
 
@@ -99,7 +100,7 @@ public class AuthService : IAuthService
 
     private string GetUserLetters(string value)
     {
-        return value[0].ToString() + value[1].ToString();
+        return $"{value.ElementAt(0)}{value.ElementAt(1)}";
     }
 
     public async Task<IActionResult> SignOut(HttpContext context)
@@ -110,14 +111,8 @@ public class AuthService : IAuthService
         return new RedirectResult("");
     }
 
-    public async Task<byte[]> HashAsync(string value)
+    public Task<byte[]> HashAsync(string value)
     {
-        using var sha512 = new SHA512Managed();
-
-        var valueBytes = Encoding.UTF8.GetBytes(value);
-
-        Stream valueStream = new MemoryStream(valueBytes);
-
-        return await sha512.ComputeHashAsync(valueStream);
+        return Crypto.HashSha512Async(value);
     }
 }

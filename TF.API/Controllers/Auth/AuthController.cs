@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TF.Auth.Controller;
 using TF.BlankModels.Models.User;
 using TF.Services.Services.Auth;
+using TF.ViewModels.Models.User;
 
-namespace TF.API.Controllers
+namespace TF.API.Controllers.Auth
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : ControllerBase<UserView>
     {
         private readonly IAuthService _authService;
 
@@ -15,19 +18,20 @@ namespace TF.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost(nameof(SignIn))]
+        [HttpPost("[action]")]
         public async Task<IActionResult> SignIn(string login, string password)
         {
             return await _authService.SignIn(login, password, HttpContext);
         }
 
-        [HttpPost(nameof(SignUp))]
+        [HttpPost("[action]")]
         public async Task<IActionResult> SignUp(UserBlank userBlank)
         {
             return await _authService.SignUp(userBlank, HttpContext);
         }
 
-        [HttpPost(nameof(SignOut))]
+        [Authorize]
+        [HttpPost("[action]")]
         public new async Task<IActionResult> SignOut()
         {
             return await _authService.SignOut(HttpContext);
