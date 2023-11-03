@@ -20,26 +20,46 @@ public class UserService : IUserService
 
     public async Task<IActionResult> GetUserAsync(Guid id)
     {
-        var user = await _userRepository.GetUserAsync(id);
+        var user = await GetUserView(id);
 
         if (user == null)
             return new NotFoundResult();
 
-        var userView = new UserView(new UserDomain(user));
-
-        return new OkObjectResult(userView);
+        return new OkObjectResult(user);
     }
 
     public async Task<IActionResult> GetUserAsync(string usernameOrEmail)
     {
-        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+        var user = await GetUserView(usernameOrEmail);
 
         if (user == null)
             return new NotFoundResult();
 
+        return new OkObjectResult(user);
+    }
+
+    private async Task<UserView?> GetUserView(Guid id)
+    {
+        var user = await _userRepository.GetUserAsync(id);
+
+        if (user == null)
+            return null;
+
         var userView = new UserView(new UserDomain(user));
 
-        return new OkObjectResult(userView);
+        return userView;
+    }
+
+    private async Task<UserView?> GetUserView(string usernameOrEmail)
+    {
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return null;
+
+        var userView = new UserView(new UserDomain(user));
+
+        return userView;
     }
 
     // validate in model

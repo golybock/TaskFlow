@@ -367,7 +367,7 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         return await ExecuteAsync(query, parameters);
     }
 
-    public async Task<CardTypeDatabase?> GetCardTypeAsync(int cardTypeId)
+    public async Task<CardTypeDatabase?> GetCardTypeAsync(Guid cardTypeId)
     {
         string query = "select * from card_type " +
                        "where id = $1";

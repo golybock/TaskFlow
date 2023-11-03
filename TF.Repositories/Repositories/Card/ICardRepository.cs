@@ -70,7 +70,7 @@ public interface ICardRepository
 
     #region CardType
 
-    public Task<CardTypeDatabase?> GetCardTypeAsync(Int32 cardTypeId);
+    public Task<CardTypeDatabase?> GetCardTypeAsync(Guid cardTypeId);
 
     public Task<IEnumerable<CardTypeDatabase>?> GetCardTypesAsync();
 

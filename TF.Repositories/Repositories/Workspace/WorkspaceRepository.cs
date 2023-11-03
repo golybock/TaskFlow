@@ -26,28 +26,28 @@ public class WorkspaceRepository : NpgsqlRepository, IWorkspaceRepository
         return await GetListAsync<WorkspaceDatabase>(query);
     }
 
-    public async Task<WorkspaceTableDatabase?> GetWorkspaceTablesAsync(Guid workspaceId)
+    public async Task<IEnumerable<WorkspaceTableDatabase>> GetWorkspaceTablesAsync(Guid workspaceId)
     {
-        string query = "select * from workspace_table where id = $1";
+        string query = "select * from workspace_table where workspace_id = $1";
 
         var parameters = new[]
         {
             new NpgsqlParameter {Value = workspaceId}
         };
 
-        return await GetAsync<WorkspaceTableDatabase>(query, parameters);
+        return await GetListAsync<WorkspaceTableDatabase>(query, parameters);
     }
 
-    public async Task<TableColumnDatabase?> GetTableColumnsAsync(Guid tableColumnId)
+    public async Task<IEnumerable<TableColumnDatabase>> GetTableColumnsAsync(Guid tableId)
     {
-        string query = "select * from table_column where id = $1";
+        string query = "select * from table_column where workspace_table_id = $1";
 
         var parameters = new[]
         {
-            new NpgsqlParameter {Value = tableColumnId}
+            new NpgsqlParameter {Value = tableId}
         };
 
-        return await GetAsync<TableColumnDatabase>(query, parameters);
+        return await GetListAsync<TableColumnDatabase>(query, parameters);
     }
 
     public async Task<Boolean> CreateWorkspaceAsync(WorkspaceDatabase workspaceDatabase)

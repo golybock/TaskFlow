@@ -22,6 +22,21 @@ public class UserView : IUserModel
 
     public string? Role { get; set; }
 
+    public UserView()
+    {
+    }
+
+    public UserView(Guid id, string fullName, string username, string email, string letters, string? imageUrl, string? role)
+    {
+        Id = id;
+        FullName = fullName;
+        Username = username;
+        Email = email;
+        Letters = letters;
+        ImageUrl = imageUrl;
+        Role = role;
+    }
+
     public UserView(UserDomain userDomain)
     {
         Id = userDomain.Id;

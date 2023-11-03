@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TF.Auth.Controller;
 using TF.BlankModels.Models.User;
 using TF.Services.Services.Users;
 using TF.ViewModels.Models.User;
 
-namespace TF.API.Controllers.Auth;
+namespace TF.API.Controllers.User;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
+// todo refactor to edit only current user
 public class UserController : ControllerBase<UserView>
 {
     private readonly UserService _userService;
