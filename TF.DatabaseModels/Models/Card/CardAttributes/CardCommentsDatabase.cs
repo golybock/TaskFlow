@@ -13,4 +13,18 @@ public class CardCommentsDatabase
     public String? AttachmentUrl { get; set; }
 
     public Boolean Deleted { get; set; }
+
+    public CardCommentsDatabase()
+    {
+    }
+
+    public CardCommentsDatabase(int id, Guid cardId, Guid userId, string? comment, string? attachmentUrl, bool deleted)
+    {
+        Id = id;
+        CardId = cardId;
+        UserId = userId;
+        Comment = comment;
+        AttachmentUrl = attachmentUrl;
+        Deleted = deleted;
+    }
 }

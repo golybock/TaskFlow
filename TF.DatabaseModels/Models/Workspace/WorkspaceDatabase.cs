@@ -9,4 +9,14 @@ public class WorkspaceDatabase
     public DateTime CreatedTimeStamp { get; set; }
 
     public Guid CreatedUserId { get; set; }
+
+    public WorkspaceDatabase() { }
+
+    public WorkspaceDatabase(Guid id, string name, DateTime createdTimeStamp, Guid createdUserId)
+    {
+        Id = id;
+        Name = name;
+        CreatedTimeStamp = createdTimeStamp;
+        CreatedUserId = createdUserId;
+    }
 }

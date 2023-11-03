@@ -7,4 +7,15 @@ public class CardTypeDatabase
     public String Name { get; set; } = null!;
 
     public String Color { get; set; } = null!;
+
+    public CardTypeDatabase()
+    {
+    }
+
+    public CardTypeDatabase(int id, string name, string color)
+    {
+        Id = id;
+        Name = name;
+        Color = color;
+    }
 }

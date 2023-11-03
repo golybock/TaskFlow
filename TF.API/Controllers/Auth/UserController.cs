@@ -8,10 +8,9 @@ namespace TF.API.Controllers.Auth;
 
 [ApiController]
 [Route("api/[controller]")]
-// todo refactor
 public class UserController : ControllerBase<UserView>
 {
-    private UserService _userService;
+    private readonly UserService _userService;
 
     public UserController(UserService userService)
     {
@@ -21,54 +20,67 @@ public class UserController : ControllerBase<UserView>
     [HttpGet("[action]")]
     public async Task<IActionResult?> GetUserAsync(Guid? id, String? usernameOrEmail)
     {
-        UserView? userView = null;
-
         if (id != null)
         {
-            userView =  await _userService.GetUserAsync(id.Value);
+            return await _userService.GetUserAsync(id.Value);
         }
 
         if (usernameOrEmail != null)
         {
-            userView =  await _userService.GetUserAsync(usernameOrEmail);
+            return await _userService.GetUserAsync(usernameOrEmail);
         }
 
-        IActionResult res = userView == null ? BadRequest() : Ok(userView);
-
-        return res;
+        return BadRequest("Invalid request data, please set id or username or email");
     }
 
     [HttpPost("[action]")]
-    public Task<IActionResult> CreateUserAsync(UserBlank userBlank)
+    public async Task<IActionResult> CreateUserAsync(UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        return await _userService.CreateUserAsync(userBlank);
     }
 
     [HttpPut("[action]")]
-    public Task<IActionResult> UpdateUserAsync(Guid id, UserBlank userBlank)
+    public async Task<IActionResult> UpdateUserAsync(Guid? id, String? usernameOrEmail, UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        if (id != null)
+        {
+            return await _userService.UpdateUserAsync(id.Value, userBlank);
+        }
+
+        if (usernameOrEmail != null)
+        {
+            return await _userService.UpdateUserAsync(usernameOrEmail, userBlank);
+        }
+
+        return BadRequest("Invalid request data, please set id or username or email");
     }
 
     [HttpPut("[action]")]
-    public Task<IActionResult> UpdateUserAsync(String usernameOrEmail, UserBlank userBlank)
+    public async Task<IActionResult> UpdateUserPasswordAsync(Guid? id, String? usernameOrEmail, UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        if (id != null)
+        {
+            return await _userService.UpdateUserPasswordAsync(id.Value, userBlank);
+        }
+
+        if (usernameOrEmail != null)
+        {
+            return await _userService.UpdateUserPasswordAsync(usernameOrEmail, userBlank);
+        }
+
+        return BadRequest("Invalid request data, please set id or username or email");
     }
+
 
     [HttpDelete("[action]")]
     public async Task<IActionResult> DeleteUserAsync(Guid id)
     {
-        var res = await _userService.DeleteUserAsync(id);
-
-        return res ? Ok() : BadRequest();
+        return await _userService.DeleteUserAsync(id);
     }
 
     [HttpDelete("[action]")]
     public async Task<IActionResult> DeleteUserAsync(String username)
     {
-        var res = await _userService.DeleteUserAsync(username);
-
-        return res ? Ok() : BadRequest();
+        return await _userService.DeleteUserAsync(username);
     }
 }

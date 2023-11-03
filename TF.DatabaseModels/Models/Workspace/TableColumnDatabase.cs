@@ -11,4 +11,14 @@ public class TableColumnDatabase
     public Guid WorkspaceTableId { get; set; }
 
     public ColumnType TypeId { get; set; }
+
+    public TableColumnDatabase() { }
+
+    public TableColumnDatabase(Guid id, string name, Guid workspaceTableId, ColumnType typeId)
+    {
+        Id = id;
+        Name = name;
+        WorkspaceTableId = workspaceTableId;
+        TypeId = typeId;
+    }
 }

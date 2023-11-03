@@ -23,9 +23,11 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserAsync(id);
 
         if (user == null)
-            return null;
+            return new NotFoundResult();
 
-        return new UserView(new UserDomain(user));
+        var userView = new UserView(new UserDomain(user));
+
+        return new OkObjectResult(userView);
     }
 
     public async Task<IActionResult> GetUserAsync(string usernameOrEmail)
@@ -33,56 +35,118 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserAsync(usernameOrEmail);
 
         if (user == null)
-            return null;
+            return new NotFoundResult();
 
-        return new UserView(new UserDomain(user));
+        var userView = new UserView(new UserDomain(user));
+
+        return new OkObjectResult(userView);
     }
 
-    // todo refactor
-    // todo validate
+    // validate in model
     public async Task<IActionResult> CreateUserAsync(UserBlank userBlank)
     {
-        return (await CreateUserDatabaseAsync(userBlank)) != null;
+        var res = await CreateUserDatabaseAsync(userBlank);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
+    public async Task<IActionResult> UpdateUserPasswordAsync(Guid id, UserBlank userBlank)
+    {
+        var user = await _userRepository.GetUserAsync(id);
+
+        if (user == null)
+            return new NotFoundResult();
+
+        var hashedPassword = await Crypto.HashSha512Async(userBlank.Password!);
+
+        user.Password = hashedPassword;
+
+        var res = await _userRepository.UpdateUserAsync(id, user);
+
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка обновления данных");
+    }
+
+    public async Task<IActionResult> UpdateUserPasswordAsync(string usernameOrEmail, UserBlank userBlank)
+    {
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return new NotFoundResult();
+
+        var hashedPassword = await Crypto.HashSha512Async(userBlank.Password!);
+
+        user.Password = hashedPassword;
+
+        var res = await _userRepository.UpdateUserAsync(usernameOrEmail, user);
+
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка обновления данных");
+    }
+
+    // todo сделать отдельный метод для смены пароля
     public async Task<IActionResult> UpdateUserAsync(Guid id, UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserAsync(id);
+
+        if (user == null)
+            return new NotFoundResult();
+
+        var letters = GetUserLetters(userBlank.FullName);
+
+        user.FullName = userBlank.FullName;
+        user.Letters = letters;
+        user.Email = user.Email;
+        user.ImageUrl = user.ImageUrl;
+
+        var res = await _userRepository.UpdateUserAsync(id, user);
+
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка обновления данных");
     }
 
     public async Task<IActionResult> UpdateUserAsync(string usernameOrEmail, UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return new NotFoundResult();
+
+        var letters = GetUserLetters(userBlank.FullName);
+
+        user.FullName = userBlank.FullName;
+        user.Letters = letters;
+        user.Email = user.Email;
+        user.ImageUrl = user.ImageUrl;
+
+        var res = await _userRepository.UpdateUserAsync(usernameOrEmail, user);
+
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка обновления данных");
     }
 
     public async Task<IActionResult> DeleteUserAsync(Guid id)
     {
-        return await _userRepository.DeleteUserAsync(id);
+        var res = await _userRepository.DeleteUserAsync(id);
+
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка удаления");
     }
 
     public async Task<IActionResult> DeleteUserAsync(string username)
     {
-        return await _userRepository.DeleteUserAsync(username);
-    }
+        var res = await _userRepository.DeleteUserAsync(username);
 
-    private Task<byte[]> HashAsync(string value)
-    {
-        return Crypto.HashSha512Async(value);
+        return res ? new OkResult() : new BadRequestObjectResult("Ошибка удаления");
     }
-
 
     private string GetUserLetters(string value)
     {
         return $"{value.ElementAt(0)}{value.ElementAt(1)}";
     }
 
-    private async Task<UserDatabase?> CreateUserDatabaseAsync(UserBlank userBlank)
+    private async Task<Boolean> CreateUserDatabaseAsync(UserBlank userBlank)
     {
-        var hashedPassword = await HashAsync(userBlank.Password!);
+        var hashedPassword = await Crypto.HashSha512Async(userBlank.Password!);
 
         var letters = GetUserLetters(userBlank.FullName);
 
-        var userDB = new UserDatabase(
+        var userDatabase = new UserDatabase(
             Guid.NewGuid(),
             userBlank.FullName,
             userBlank.UserName,
@@ -94,13 +158,6 @@ public class UserService : IUserService
             false
         );
 
-        var res = await _userRepository.CreateUserAsync(userDB);
-
-        if (res)
-        {
-            return userDB;
-        }
-
-        return null;
+        return await _userRepository.CreateUserAsync(userDatabase);
     }
 }

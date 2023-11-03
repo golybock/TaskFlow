@@ -11,6 +11,10 @@ public interface IUserService
 
     public Task<IActionResult> CreateUserAsync(UserBlank userBlank);
 
+    public Task<IActionResult> UpdateUserPasswordAsync(Guid id, UserBlank userBlank);
+
+    public Task<IActionResult> UpdateUserPasswordAsync(String usernameOrEmail, UserBlank userBlank);
+
     public Task<IActionResult> UpdateUserAsync(Guid id, UserBlank userBlank);
 
     public Task<IActionResult> UpdateUserAsync(String usernameOrEmail, UserBlank userBlank);

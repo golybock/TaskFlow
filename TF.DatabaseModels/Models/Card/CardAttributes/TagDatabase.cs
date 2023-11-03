@@ -7,4 +7,15 @@ public class TagDatabase
     public String Name { get; set; } = null!;
 
     public String Color { get; set; } = null!;
+
+    public TagDatabase()
+    {
+    }
+
+    public TagDatabase(int id, string name, string color)
+    {
+        Id = id;
+        Name = name;
+        Color = color;
+    }
 }

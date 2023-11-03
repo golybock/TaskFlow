@@ -21,4 +21,23 @@ public class CardDatabase
     public DateTime Deadline { get; set; }
 
     public Boolean Deleted { get; set; }
+
+    public CardDatabase()
+    {
+    }
+
+    public CardDatabase(Guid id, string header, string? description, Guid tableColumnId, int cardTypeId,
+        Guid createdUserId, Guid previousCardId, DateTime createdTimestamp, DateTime deadline, bool deleted)
+    {
+        Id = id;
+        Header = header;
+        Description = description;
+        TableColumnId = tableColumnId;
+        CardTypeId = cardTypeId;
+        CreatedUserId = createdUserId;
+        PreviousCardId = previousCardId;
+        CreatedTimestamp = createdTimestamp;
+        Deadline = deadline;
+        Deleted = deleted;
+    }
 }
