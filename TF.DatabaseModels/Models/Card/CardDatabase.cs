@@ -1,4 +1,6 @@
-﻿namespace TF.DatabaseModels.Models.Card;
+﻿using TF.BlankModels.Models.Card;
+
+namespace TF.DatabaseModels.Models.Card;
 
 public class CardDatabase
 {
@@ -39,5 +41,19 @@ public class CardDatabase
         CreatedTimestamp = createdTimestamp;
         Deadline = deadline;
         Deleted = deleted;
+    }
+
+    // for create/update
+    public CardDatabase(Guid id, CardBlank cardBlank, DateTime createdTimestamp, Guid userId)
+    {
+        Id = id;
+        Header = cardBlank.Header;
+        TableColumnId = cardBlank.TableColumnId;
+        CardTypeId = cardBlank.CardTypeId;
+        Description = cardBlank.Description;
+        PreviousCardId = cardBlank.PreviousCardId;
+        Deadline = cardBlank.Deadline;
+        CreatedTimestamp = createdTimestamp;
+        CreatedUserId = userId;
     }
 }

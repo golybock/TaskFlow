@@ -28,13 +28,13 @@ public class WorkspaceView
         Tables = tables;
     }
 
-    public WorkspaceView(WorkspaceDomain workspaceDomain)
+    public WorkspaceView(WorkspaceDomain workspaceDomain, IEnumerable<WorkspaceTableView> tables)
     {
         Id = workspaceDomain.Id;
         Name = workspaceDomain.Name;
         CreatedTimeStamp = workspaceDomain.CreatedTimeStamp;
 
-        Tables = workspaceDomain.Tables.Select(table => new WorkspaceTableView(table));
+        Tables = tables;
 
         if (workspaceDomain.User != null)
             User = new UserView(workspaceDomain.User);

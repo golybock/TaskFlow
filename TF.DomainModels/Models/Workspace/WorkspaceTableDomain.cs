@@ -31,12 +31,13 @@ public class WorkspaceTableDomain
         User = user;
     }
 
-    public WorkspaceTableDomain(WorkspaceTableDatabase workspaceTableDatabase, UserDatabase? user)
+    public WorkspaceTableDomain(WorkspaceTableDatabase workspaceTableDatabase, UserDatabase? user, IEnumerable<TableColumnDomain> columns)
     {
         Id = workspaceTableDatabase.Id;
         Name = workspaceTableDatabase.Name;
         CreatedTimestamp = workspaceTableDatabase.CreatedTimestamp;
         WorkspaceId = workspaceTableDatabase.WorkspaceId;
+        Columns = columns;
 
         if (user != null)
             User = new UserDomain(user);

@@ -47,5 +47,6 @@ public class TableColumnDomain
         Id = tableColumnDatabase.Id;
         Name = tableColumnDatabase.Name;
         Type = tableColumnDatabase.TypeId;
+        Cards = cards;
     }
 }

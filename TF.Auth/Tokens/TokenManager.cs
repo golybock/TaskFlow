@@ -160,7 +160,8 @@ public class TokenManager : ITokenManager
         {
             new Claim(ClaimTypes.Name, userModel.Username),
             new Claim(ClaimTypes.Role, userModel.Role ?? "None"),
-            new Claim(ClaimTypes.Authentication, JsonSerializer.Serialize(userModel))
+            new Claim(ClaimTypes.Authentication, userModel.Id.ToString())
+
         };
     }
 

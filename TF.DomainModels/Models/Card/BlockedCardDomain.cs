@@ -6,6 +6,8 @@ namespace TF.DomainModels.Models.Card;
 
 public class BlockedCardDomain
 {
+    public Guid CardId { get; set; }
+
     public String? Comment { get; set; }
 
     public UserDomain? BlockedUser { get; set; }
@@ -18,8 +20,9 @@ public class BlockedCardDomain
     {
     }
 
-    public BlockedCardDomain(string? comment, UserDomain? blockedUser, DateTime startBlockTimestamp, DateTime endBlockTimestamp)
+    public BlockedCardDomain(Guid cardId, string? comment, UserDomain? blockedUser, DateTime startBlockTimestamp, DateTime endBlockTimestamp)
     {
+        CardId = cardId;
         Comment = comment;
         BlockedUser = blockedUser;
         StartBlockTimestamp = startBlockTimestamp;
@@ -28,6 +31,7 @@ public class BlockedCardDomain
 
     public BlockedCardDomain(BlockedCardDatabase blockedCardDatabase, UserDatabase? userDatabase)
     {
+        CardId = blockedCardDatabase.CardId;
         Comment = blockedCardDatabase.Comment;
         StartBlockTimestamp = blockedCardDatabase.StartBlock;
         EndBlockTimestamp = blockedCardDatabase.EndBlock;

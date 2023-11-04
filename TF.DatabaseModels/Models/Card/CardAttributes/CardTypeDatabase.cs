@@ -1,4 +1,6 @@
-﻿namespace TF.DatabaseModels.Models.Card.CardAttributes;
+﻿using TF.BlankModels.Models.Card;
+
+namespace TF.DatabaseModels.Models.Card.CardAttributes;
 
 public class CardTypeDatabase
 {
@@ -17,5 +19,17 @@ public class CardTypeDatabase
         Id = id;
         Name = name;
         Color = color;
+    }
+
+    public CardTypeDatabase(string name, string color)
+    {
+        Name = name;
+        Color = color;
+    }
+
+    public CardTypeDatabase(CardTypeBlank cardTypeBlank)
+    {
+        Color = cardTypeBlank.Color;
+        Name = cardTypeBlank.Name;
     }
 }

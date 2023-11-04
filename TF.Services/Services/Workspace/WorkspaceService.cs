@@ -104,15 +104,10 @@ public class WorkspaceService : IWorkspaceService
 
         foreach (var column in columns)
         {
-
-
             var cards = await _cardRepository.GetTableCardsAsync(column.WorkspaceTableId);
 
-            var tableColumnDomain = new TableColumnDomain(column, cards);
+            var cardViews = cards.Select(async card => await GetCardView(card.Id));
 
-            var tableColumnView = new TableColumnView(column, cards);
-
-            tableColumnViews.Add();
         }
 
     }
@@ -171,8 +166,7 @@ public class WorkspaceService : IWorkspaceService
 
     #endregion
 
-
-    // todo aboba
+    // todo refactor
     private async Task<CardView?> GetCardView(Guid id)
     {
         var card = await _cardRepository.GetCardAsync(id);
@@ -180,11 +174,26 @@ public class WorkspaceService : IWorkspaceService
         if (card == null)
             return null;
 
-        var cardType = await GetCardTypeView(card.Id);
+        var cardType = await _cardRepository.GetCardTypeAsync(card.Id);
 
-        var blockedCard = await GetBlockedCardView(card.Id);
+        var cardUser = await _userRepository.GetUserAsync(card.CreatedUserId);
 
-        var card = new CardDomain(card);
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(card.Id);
+
+        if (blockedCard != null)
+        {
+            var blockedCardUser = await _userRepository.GetUserAsync(blockedCard.UserId);
+
+            var cardDomain = new CardDomain(card, cardType!, cardUser!, blockedCard, blockedCardUser!);
+
+            return new CardView(cardDomain);
+        }
+        else
+        {
+            var cardDomain = new CardDomain(card, cardType!, cardUser!, null,  null);
+
+            return new CardView(cardDomain);
+        }
     }
 
     public async Task<IActionResult> CreateWorkspaceAsync(WorkspaceBlank workspaceBlank, Guid userId)

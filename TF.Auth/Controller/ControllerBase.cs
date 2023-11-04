@@ -5,7 +5,7 @@ using TF.Auth.AuthManager;
 namespace TF.Auth.Controller;
 
 // T - UserType
-public class ControllerBase<T> : Microsoft.AspNetCore.Mvc.ControllerBase
+public class ControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
 {
     // private IAuthManager _authManager;
 
@@ -15,14 +15,8 @@ public class ControllerBase<T> : Microsoft.AspNetCore.Mvc.ControllerBase
     // }
 
     // username
-    public new T? User
-    {
-        get
-        {
-            // не может быть null
-            var json = base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)!.ValueType;
+    protected new string User =>  base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)!.Value;
 
-            return JsonSerializer.Deserialize<T>(json);
-        }
-    }
+    protected Guid UserId =>
+        Guid.Parse(base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)!.Value);
 }

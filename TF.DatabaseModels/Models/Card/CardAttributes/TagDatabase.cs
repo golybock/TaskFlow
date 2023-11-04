@@ -18,4 +18,10 @@ public class TagDatabase
         Name = name;
         Color = color;
     }
+
+    public TagDatabase(string name, string color)
+    {
+        Name = name;
+        Color = color;
+    }
 }

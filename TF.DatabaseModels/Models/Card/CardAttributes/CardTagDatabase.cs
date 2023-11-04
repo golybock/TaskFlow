@@ -18,4 +18,10 @@ public class CardTagDatabase
         CardId = cardId;
         TagId = tagId;
     }
+
+    public CardTagDatabase(Guid cardId, int tagId)
+    {
+        CardId = cardId;
+        TagId = tagId;
+    }
 }

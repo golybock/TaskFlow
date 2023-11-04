@@ -27,11 +27,23 @@ public class WorkspaceTableView
         User = user;
     }
 
-    public WorkspaceTableView(WorkspaceTableDomain workspaceTableDomain)
+    public WorkspaceTableView(WorkspaceTableDomain workspaceTableDomain, IEnumerable<TableColumnView> tableColumns)
     {
         Id = workspaceTableDomain.Id;
         Name = workspaceTableDomain.Name;
         CreatedTimestamp = workspaceTableDomain.CreatedTimestamp;
+        Columns = tableColumns;
+
+        if (workspaceTableDomain.User != null)
+            User = new UserView(workspaceTableDomain.User);
+    }
+
+    public WorkspaceTableView(WorkspaceTableDomain workspaceTableDomain, IEnumerable<TableColumnDomain> tableColumns)
+    {
+        Id = workspaceTableDomain.Id;
+        Name = workspaceTableDomain.Name;
+        CreatedTimestamp = workspaceTableDomain.CreatedTimestamp;
+        Columns = tableColumns.Select(tableCol => new TableColumnView(tableCol));
 
         if (workspaceTableDomain.User != null)
             User = new UserView(workspaceTableDomain.User);

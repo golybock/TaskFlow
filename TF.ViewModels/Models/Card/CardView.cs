@@ -57,11 +57,16 @@ public class CardView
         Header = cardDomain.Header;
         Description = cardDomain.Description;
         Path = cardDomain.Path;
-        CardType = new CardTypeView(cardDomain.CardType);
-        CreatedUser = new UserView(cardDomain.CreatedUser);
         CreatedTimestamp = cardDomain.CreatedTimestamp;
         Deadline = cardDomain.Deadline;
         PreviousCardId = cardDomain.PreviousCardId;
+
+        Users = cardDomain.Users.Select(user => new UserView(user));
+        Tags = cardDomain.Tags.Select(tag => new TagView(tag));
+        Comments = cardDomain.Comments.Select(comment => new CardCommentView(comment));
+
+        CardType = new CardTypeView(cardDomain.CardType);
+        CreatedUser = new UserView(cardDomain.CreatedUser);
 
         if (cardDomain.Block != null)
             Block = new BlockedCardView(cardDomain.Block);

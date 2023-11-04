@@ -19,6 +19,21 @@ public class UserDomain
 
     public Role Role { get; set; }
 
+    public UserDomain()
+    {
+    }
+
+    public UserDomain(Guid id, string fullName, string username, string email, string letters, string? imageUrl, Role role)
+    {
+        Id = id;
+        FullName = fullName;
+        Username = username;
+        Email = email;
+        Letters = letters;
+        ImageUrl = imageUrl;
+        Role = role;
+    }
+
     public UserDomain(UserDatabase userDatabase)
     {
         Id = userDatabase.Id;

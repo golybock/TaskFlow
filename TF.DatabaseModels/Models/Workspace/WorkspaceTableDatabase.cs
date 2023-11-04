@@ -1,4 +1,6 @@
-﻿namespace TF.DatabaseModels.Models.Workspace;
+﻿using TF.BlankModels.Models.Workspace;
+
+namespace TF.DatabaseModels.Models.Workspace;
 
 public class WorkspaceTableDatabase
 {
@@ -21,5 +23,14 @@ public class WorkspaceTableDatabase
         CreatedTimestamp = createdTimestamp;
         CreatedUserId = createdUserId;
         WorkspaceId = workspaceId;
+    }
+
+    public WorkspaceTableDatabase(Guid id, WorkspaceTableBlank workspaceTableBlank, DateTime createdTimestamp, Guid createdUserId)
+    {
+        Id = id;
+        Name = workspaceTableBlank.Name;
+        WorkspaceId = workspaceTableBlank.WorkspaceId;
+        CreatedTimestamp = createdTimestamp;
+        CreatedUserId = createdUserId;
     }
 }

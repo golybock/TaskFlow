@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TF.BlankModels\TF.BlankModels.csproj" />
       <ProjectReference Include="..\TF.Tools\TF.Tools.csproj" />
     </ItemGroup>
 

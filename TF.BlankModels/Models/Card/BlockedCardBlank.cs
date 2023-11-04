@@ -1,6 +1,6 @@
 ﻿namespace TF.BlankModels.Models.Card;
 
-public class BlockCardBlank
+public class BlockedCardBlank
 {
     public Guid CardId { get; set; }
 

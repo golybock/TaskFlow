@@ -34,11 +34,11 @@ public class TableColumnView
         Cards = cards;
     }
 
-    public TableColumnView(TableColumnDomain tableColumnDomain, IEnumerable<CardDomain> cards)
+    public TableColumnView(TableColumnDomain tableColumnDomain)
     {
         Id = tableColumnDomain.Id;
         Name = tableColumnDomain.Name;
         Type = tableColumnDomain.Type;
-        Cards = cards.Select(card => new CardView(card));
+        Cards = tableColumnDomain.Cards.Select(card => new CardView(card));
     }
 }

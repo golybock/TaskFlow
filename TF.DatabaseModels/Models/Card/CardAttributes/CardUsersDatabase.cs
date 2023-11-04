@@ -18,4 +18,10 @@ public class CardUsersDatabase
         CardId = cardId;
         UserId = userId;
     }
+
+    public CardUsersDatabase(Guid cardId, Guid userId)
+    {
+        CardId = cardId;
+        UserId = userId;
+    }
 }

@@ -39,17 +39,6 @@ public class WorkspaceDomain
             User = new UserDomain(user);
     }
 
-    public WorkspaceDomain(WorkspaceDatabase workspaceDatabase, UserDatabase? user, IEnumerable<WorkspaceTableDatabase> tables)
-    {
-        Id = workspaceDatabase.Id;
-        Name = workspaceDatabase.Name;
-        CreatedTimeStamp = workspaceDatabase.CreatedTimeStamp;
-        Tables = tables.Select(table => new WorkspaceTableDomain(table, user));
-
-        if (user != null)
-            User = new UserDomain(user);
-    }
-
     public WorkspaceDomain(WorkspaceDatabase workspaceDatabase, UserDatabase? user, IEnumerable<WorkspaceTableDomain> tables)
     {
         Id = workspaceDatabase.Id;

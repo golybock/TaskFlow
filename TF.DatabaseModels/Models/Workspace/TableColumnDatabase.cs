@@ -1,4 +1,5 @@
-﻿using TF.Tools.Enums;
+﻿using TF.BlankModels.Models.Workspace;
+using TF.Tools.Enums;
 
 namespace TF.DatabaseModels.Models.Workspace;
 
@@ -20,5 +21,14 @@ public class TableColumnDatabase
         Name = name;
         WorkspaceTableId = workspaceTableId;
         TypeId = typeId;
+    }
+
+    // create or update
+    public TableColumnDatabase(Guid id, TableColumnBlank tableColumnBlank)
+    {
+        Id = id;
+        Name = tableColumnBlank.Name;
+        WorkspaceTableId = tableColumnBlank.WorkspaceTableId;
+        TypeId = tableColumnBlank.TypeId;
     }
 }

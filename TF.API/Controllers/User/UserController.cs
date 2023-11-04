@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TF.Auth.Controller;
 using TF.BlankModels.Models.User;
 using TF.Services.Services.Users;
-using TF.ViewModels.Models.User;
+using ControllerBase = TF.Auth.Controller.ControllerBase;
 
 namespace TF.API.Controllers.User;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-// todo refactor to edit only current user
-public class UserController : ControllerBase<UserView>
+public class UserController : ControllerBase
 {
     private readonly UserService _userService;
 
@@ -36,6 +34,12 @@ public class UserController : ControllerBase<UserView>
         return BadRequest("Invalid request data, please set id or username or email");
     }
 
+    [HttpGet("[action]")]
+    public async Task<IActionResult?> GetProfileAsync()
+    {
+        return await _userService.GetUserAsync(User);
+    }
+
     [HttpPost("[action]")]
     public async Task<IActionResult> CreateUserAsync(UserBlank userBlank)
     {
@@ -43,47 +47,20 @@ public class UserController : ControllerBase<UserView>
     }
 
     [HttpPut("[action]")]
-    public async Task<IActionResult> UpdateUserAsync(Guid? id, String? usernameOrEmail, UserBlank userBlank)
+    public async Task<IActionResult> UpdateUserAsync(UserBlank userBlank)
     {
-        if (id != null)
-        {
-            return await _userService.UpdateUserAsync(id.Value, userBlank);
-        }
-
-        if (usernameOrEmail != null)
-        {
-            return await _userService.UpdateUserAsync(usernameOrEmail, userBlank);
-        }
-
-        return BadRequest("Invalid request data, please set id or username or email");
+        return await _userService.UpdateUserAsync(User, userBlank);
     }
 
     [HttpPut("[action]")]
-    public async Task<IActionResult> UpdateUserPasswordAsync(Guid? id, String? usernameOrEmail, UserBlank userBlank)
+    public async Task<IActionResult> UpdatePasswordAsync(UserBlank userBlank)
     {
-        if (id != null)
-        {
-            return await _userService.UpdateUserPasswordAsync(id.Value, userBlank);
-        }
-
-        if (usernameOrEmail != null)
-        {
-            return await _userService.UpdateUserPasswordAsync(usernameOrEmail, userBlank);
-        }
-
-        return BadRequest("Invalid request data, please set id or username or email");
+        return await _userService.UpdateUserPasswordAsync(User, userBlank);
     }
-
 
     [HttpDelete("[action]")]
     public async Task<IActionResult> DeleteUserAsync(Guid id)
     {
         return await _userService.DeleteUserAsync(id);
-    }
-
-    [HttpDelete("[action]")]
-    public async Task<IActionResult> DeleteUserAsync(String username)
-    {
-        return await _userService.DeleteUserAsync(username);
     }
 }
