@@ -38,31 +38,6 @@ public class UserService : IUserService
         return new OkObjectResult(user);
     }
 
-    private async Task<UserView?> GetUserView(Guid id)
-    {
-        var user = await _userRepository.GetUserAsync(id);
-
-        if (user == null)
-            return null;
-
-        var userView = new UserView(new UserDomain(user));
-
-        return userView;
-    }
-
-    private async Task<UserView?> GetUserView(string usernameOrEmail)
-    {
-        var user = await _userRepository.GetUserAsync(usernameOrEmail);
-
-        if (user == null)
-            return null;
-
-        var userView = new UserView(new UserDomain(user));
-
-        return userView;
-    }
-
-    // validate in model
     public async Task<IActionResult> CreateUserAsync(UserBlank userBlank)
     {
         var res = await CreateUserDatabaseAsync(userBlank);
@@ -102,7 +77,6 @@ public class UserService : IUserService
         return res ? new OkResult() : new BadRequestObjectResult("Ошибка обновления данных");
     }
 
-    // todo сделать отдельный метод для смены пароля
     public async Task<IActionResult> UpdateUserAsync(Guid id, UserBlank userBlank)
     {
         var user = await _userRepository.GetUserAsync(id);
@@ -114,8 +88,9 @@ public class UserService : IUserService
 
         user.FullName = userBlank.FullName;
         user.Letters = letters;
-        user.Email = user.Email;
-        user.ImageUrl = user.ImageUrl;
+        user.Email = userBlank.Email;
+        user.RoleId = userBlank.Role;
+        user.ImageUrl = userBlank.ImageUrl;
 
         var res = await _userRepository.UpdateUserAsync(id, user);
 
@@ -133,8 +108,9 @@ public class UserService : IUserService
 
         user.FullName = userBlank.FullName;
         user.Letters = letters;
-        user.Email = user.Email;
-        user.ImageUrl = user.ImageUrl;
+        user.Email = userBlank.Email;
+        user.RoleId = userBlank.Role;
+        user.ImageUrl = userBlank.ImageUrl;
 
         var res = await _userRepository.UpdateUserAsync(usernameOrEmail, user);
 
@@ -174,10 +150,34 @@ public class UserService : IUserService
             hashedPassword,
             letters,
             userBlank.ImageUrl,
-            Role.Admin,
+            userBlank.Role,
             false
         );
 
         return await _userRepository.CreateUserAsync(userDatabase);
+    }
+
+    private async Task<UserView?> GetUserView(Guid id)
+    {
+        var user = await _userRepository.GetUserAsync(id);
+
+        if (user == null)
+            return null;
+
+        var userView = new UserView(new UserDomain(user));
+
+        return userView;
+    }
+
+    private async Task<UserView?> GetUserView(string usernameOrEmail)
+    {
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return null;
+
+        var userView = new UserView(new UserDomain(user));
+
+        return userView;
     }
 }

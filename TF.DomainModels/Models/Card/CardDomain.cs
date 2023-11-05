@@ -54,7 +54,7 @@ public class CardDomain
         Block = block;
     }
 
-    public CardDomain(CardDatabase cardDatabase, CardTypeDatabase cardTypeDatabase, UserDatabase userDatabase, BlockedCardDatabase blockedCardDatabase, UserDatabase blockedUser)
+    public CardDomain(CardDatabase cardDatabase, CardTypeDatabase cardTypeDatabase, UserDatabase userDatabase, BlockedCardDatabase? blockedCardDatabase, UserDatabase? blockedUser)
     {
         Id = cardDatabase.Id;
         Header = cardDatabase.Header;
@@ -64,6 +64,8 @@ public class CardDomain
         CreatedTimestamp = cardDatabase.CreatedTimestamp;
         Deadline = cardDatabase.Deadline;
         PreviousCardId = cardDatabase.PreviousCardId;
-        Block = new BlockedCardDomain(blockedCardDatabase, blockedUser);
+
+        if (blockedCardDatabase != null)
+            Block = new BlockedCardDomain(blockedCardDatabase, blockedUser);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TF.Tools.Enums;
 
 namespace TF.BlankModels.Models.User;
 
@@ -16,4 +17,6 @@ public class UserBlank
     public String? Password { get; set; }
 
     public String? ImageUrl { get; set; }
+
+    public Role Role { get; set; }
 }
