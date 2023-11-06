@@ -8,7 +8,11 @@ public interface IWorkspaceRepository
 
     public Task<IEnumerable<WorkspaceDatabase>> GetWorkspacesAsync();
 
+    public Task<WorkspaceTableDatabase?> GetWorkspaceTableAsync(Guid workspaceTableId);
+
     public Task<IEnumerable<WorkspaceTableDatabase>> GetWorkspaceTablesAsync(Guid workspaceId);
+
+    public Task<TableColumnDatabase?> GetTableColumnAsync(Guid tableColumnId);
 
     public Task<IEnumerable<TableColumnDatabase>> GetTableColumnsAsync(Guid tableId);
 

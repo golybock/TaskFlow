@@ -9,9 +9,6 @@ using TF.DomainModels.Models.Workspace;
 using TF.Repositories.Repositories.Card;
 using TF.Repositories.Repositories.Users;
 using TF.Repositories.Repositories.Workspace;
-using TF.ViewModels.Models.Card;
-using TF.ViewModels.Models.Card.CardAttributes;
-using TF.ViewModels.Models.User;
 using TF.ViewModels.Models.Workspace;
 
 namespace TF.Services.Services.Workspace;
@@ -130,33 +127,70 @@ public class WorkspaceService : IWorkspaceService
 
     public async Task<IActionResult> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var workspaceDatabase = await _workspaceRepository.GetWorkspaceAsync(id);
+
+        if (workspaceDatabase == null)
+            return new NotFoundResult();
+
+        // update values
+        workspaceDatabase.Name = workspaceBlank.Name;
+
+        var res = await _workspaceRepository.UpdateWorkspaceAsync(id, workspaceDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceTableBlank,
         Guid userId)
     {
-        throw new NotImplementedException();
+        var workspaceTableDatabase = await _workspaceRepository.GetWorkspaceTableAsync(id);
+
+        if (workspaceTableDatabase == null)
+            return new NotFoundResult();
+
+        // update values
+        workspaceTableDatabase.Name = workspaceTableBlank.Name;
+
+        var res = await _workspaceRepository.UpdateWorkspaceTableAsync(id, workspaceTableDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> UpdateTableColumnAsync(Guid id, TableColumnBlank tableColumnBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var tableColumnDatabase = await _workspaceRepository.GetTableColumnAsync(id);
+
+        if (tableColumnDatabase == null)
+            return new NotFoundResult();
+
+        // update values
+        tableColumnDatabase.Name = tableColumnBlank.Name;
+        tableColumnDatabase.TypeId = tableColumnBlank.TypeId;
+
+        var res = await _workspaceRepository.UpdateTableColumnAsync(id, tableColumnDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteWorkspaceAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var res = await _workspaceRepository.DeleteWorkspaceAsync(id);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteWorkspaceTableAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var res = await _workspaceRepository.DeleteWorkspaceTableAsync(id);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteTableColumnAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var res = await _workspaceRepository.DeleteTableColumnAsync(id);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     #region private get views

@@ -21,9 +21,21 @@ public class WorkspaceRepository : NpgsqlRepository, IWorkspaceRepository
 
     public async Task<IEnumerable<WorkspaceDatabase>> GetWorkspacesAsync()
     {
-        string query = "select * from workspace where id = $1";
+        string query = "select * from workspace";
 
         return await GetListAsync<WorkspaceDatabase>(query);
+    }
+
+    public async Task<WorkspaceTableDatabase?> GetWorkspaceTableAsync(Guid workspaceTableId)
+    {
+        string query = "select * from workspace_table where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = workspaceTableId}
+        };
+
+        return await GetAsync<WorkspaceTableDatabase>(query, parameters);
     }
 
     public async Task<IEnumerable<WorkspaceTableDatabase>> GetWorkspaceTablesAsync(Guid workspaceId)
@@ -36,6 +48,18 @@ public class WorkspaceRepository : NpgsqlRepository, IWorkspaceRepository
         };
 
         return await GetListAsync<WorkspaceTableDatabase>(query, parameters);
+    }
+
+    public async Task<TableColumnDatabase?> GetTableColumnAsync(Guid tableColumnId)
+    {
+        string query = "select * from table_column where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = tableColumnId}
+        };
+
+        return await GetAsync<TableColumnDatabase>(query, parameters);
     }
 
     public async Task<IEnumerable<TableColumnDatabase>> GetTableColumnsAsync(Guid tableId)

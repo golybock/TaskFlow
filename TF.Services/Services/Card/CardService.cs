@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TF.BlankModels.Models.Card;
 using TF.Repositories.Repositories.Card;
+using TF.Repositories.Repositories.Users;
 using TF.ViewModels.Models.Card;
 using TF.ViewModels.Models.Card.CardAttributes;
 using TF.ViewModels.Models.User;
@@ -10,10 +11,12 @@ namespace TF.Services.Services.Card;
 public class CardService : ICardService
 {
     private readonly ICardRepository _cardRepository;
+    private readonly IUserRepository _userRepository;
 
-    public CardService(ICardRepository cardRepository)
+    public CardService(ICardRepository cardRepository, IUserRepository userRepository)
     {
         _cardRepository = cardRepository;
+        _userRepository = userRepository;
     }
 
 
