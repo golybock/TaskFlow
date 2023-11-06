@@ -48,4 +48,15 @@ public class WorkspaceTableView
         if (workspaceTableDomain.User != null)
             User = new UserView(workspaceTableDomain.User);
     }
+
+    public WorkspaceTableView(WorkspaceTableDomain workspaceTableDomain)
+    {
+        Id = workspaceTableDomain.Id;
+        Name = workspaceTableDomain.Name;
+        CreatedTimestamp = workspaceTableDomain.CreatedTimestamp;
+        Columns = workspaceTableDomain.Columns.Select(tableCol => new TableColumnView(tableCol));
+
+        if (workspaceTableDomain.User != null)
+            User = new UserView(workspaceTableDomain.User);
+    }
 }

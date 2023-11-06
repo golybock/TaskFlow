@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TF.BlankModels.Models.Workspace;
+using TF.DatabaseModels.Models.Card;
+using TF.DatabaseModels.Models.Workspace;
 using TF.DomainModels.Models.Card;
 using TF.DomainModels.Models.Card.CardAttributes;
 using TF.DomainModels.Models.User;
@@ -14,14 +16,14 @@ using TF.ViewModels.Models.Workspace;
 
 namespace TF.Services.Services.Workspace;
 
-// todo очень костыльно, но рабоатет
 public class WorkspaceService : IWorkspaceService
 {
     private readonly IWorkspaceRepository _workspaceRepository;
     private readonly IUserRepository _userRepository;
     private readonly ICardRepository _cardRepository;
 
-    public WorkspaceService(IWorkspaceRepository workspaceRepository, IUserRepository userRepository, ICardRepository cardRepository)
+    public WorkspaceService(IWorkspaceRepository workspaceRepository, IUserRepository userRepository,
+        ICardRepository cardRepository)
     {
         _workspaceRepository = workspaceRepository;
         _userRepository = userRepository;
@@ -35,13 +37,8 @@ public class WorkspaceService : IWorkspaceService
         if (workspace == null)
             return new NotFoundResult();
 
-        // create and start tasks
-        var userTask = _userRepository.GetUserAsync(workspace.CreatedUserId);
-        var tablesTask = _workspaceRepository.GetWorkspaceTablesAsync(workspace.Id);
-
-        // await all tasks
-        var user = await userTask;
-        var tables = await tablesTask;
+        var user = await _userRepository.GetUserAsync(workspace.CreatedUserId);
+        var tables = await GetWorkspaceTableDomainsAsync(id);
 
         // convert models and return result
         WorkspaceDomain workspaceDomain = new WorkspaceDomain(workspace, user, tables);
@@ -63,12 +60,9 @@ public class WorkspaceService : IWorkspaceService
         foreach (var workspace in workspaces)
         {
             // create and start tasks
-            var userTask = _userRepository.GetUserAsync(workspace.CreatedUserId);
-            var tablesTask = _workspaceRepository.GetWorkspaceTablesAsync(workspace.Id);
+            var user = await _userRepository.GetUserAsync(workspace.CreatedUserId);
 
-            // await all tasks
-            var user = await userTask;
-            var tables = await tablesTask;
+            var tables = await GetWorkspaceTableDomainsAsync(workspace.Id);
 
             // convert models and return result
             WorkspaceDomain workspaceDomain = new WorkspaceDomain(workspace, user, tables);
@@ -83,152 +77,55 @@ public class WorkspaceService : IWorkspaceService
 
     public async Task<IActionResult> GetWorkspaceTablesAsync(Guid workspaceId)
     {
-        var tables = await _workspaceRepository.GetWorkspaceTablesAsync(workspaceId);
+        List<WorkspaceTableDomain> workspaceTableDomains = await GetWorkspaceTableDomainsAsync(workspaceId);
 
-        if (!tables.Any())
+        if (!workspaceTableDomains.Any())
             return new NotFoundResult();
 
-        List<WorkspaceTableDomain> workspaceTableDomains = new List<WorkspaceTableDomain>();
-
-        foreach (var table in tables)
-        {
-            var createdUser = await _userRepository.GetUserAsync(table.CreatedUserId);
-
-            var columns = GetTableColumnsAsync(table.Id);
-
-            WorkspaceTableDomain workspaceTableDomain = new WorkspaceTableDomain(table, createdUser, );
-        }
-
-
-        return new OkObjectResult(tableViews);
+        return new OkObjectResult(workspaceTableDomains.Select(c => new WorkspaceTableView(c)));
     }
 
     public async Task<IActionResult> GetTableColumnsAsync(Guid tableId)
     {
-        var columns = await _workspaceRepository.GetTableColumnsAsync(tableId);
+        var columns = await GetTableColumnsDomainAsync(tableId);
 
         if (!columns.Any())
             return new NotFoundResult();
 
-        List<TableColumnView> tableColumnViews = new List<TableColumnView>();
-
-        foreach (var column in columns)
-        {
-            var cards = await _cardRepository.GetTableCardsAsync(column.WorkspaceTableId);
-
-            var cardViews = cards.Select(async card => await GetCardView(card.Id));
-
-        }
-
-        throw new NotImplementedException();
-    }
-
-    #region private get views
-
-    private async Task<List<TableColumnDomain>?> GetTableColumns(Guid tableId)
-    {
-        var columns = await _workspaceRepository.GetTableColumnsAsync(tableId);
-
-        if (!columns.Any())
-            return null;
-
-        List<TableColumnDomain> tableColumnDomains = new List<TableColumnDomain>();
-
-        foreach (var column in columns)
-        {
-            var cards = await _cardRepository.GetTableCardsAsync(column.WorkspaceTableId);
-
-            var cardViews = cards.Select(async card => await GetCardView(card.Id));
-
-        }
-    }
-
-    private async Task<UserDomain?> GetUserView(Guid id)
-    {
-        var user = await _userRepository.GetUserAsync(id);
-
-        if (user == null)
-            return null;
-
-        var userDomain = new UserDomain(user);
-
-        return userDomain;
-    }
-
-    private async Task<UserDomain?> GetUserView(string usernameOrEmail)
-    {
-        var user = await _userRepository.GetUserAsync(usernameOrEmail);
-
-        if (user == null)
-            return null;
-
-        var userDomain = new UserDomain(user);
-
-        return userDomain;
-    }
-
-    private async Task<CardTypeDomain?> GetCardTypeView(Guid id)
-    {
-        var cardType = await _cardRepository.GetCardTypeAsync(id);
-
-        if (cardType == null)
-            return null;
-
-        var cardTypeDomain = new CardTypeDomain(cardType);
-
-        return cardTypeDomain;
-    }
-
-    private async Task<BlockedCardDomain?> GetBlockedCardView(Guid cardId)
-    {
-        var blockedCard = await _cardRepository.GetBlockedCardAsync(cardId);
-
-        if (blockedCard == null)
-            return null;
-
-        var user = await _userRepository.GetUserAsync(blockedCard.UserId);
-
-        var blockedCardDomain = new BlockedCardDomain(blockedCard, user);
-
-        return blockedCardDomain;
-    }
-
-    #endregion
-
-    private async Task<CardDomain?> GetCardView(Guid id)
-    {
-        var card = await _cardRepository.GetCardAsync(id);
-
-        if (card == null)
-            return null;
-
-        var cardType = await _cardRepository.GetCardTypeAsync(card.Id);
-
-        var cardUser = await _userRepository.GetUserAsync(card.CreatedUserId);
-
-        // blocked card
-        var blockedCard = await _cardRepository.GetBlockedCardAsync(card.Id);
-        // if blocked not null, get user
-        var blockedCardUser = await _userRepository.GetUserAsync(blockedCard?.UserId ?? Guid.Empty);
-
-        var cardDomain = new CardDomain(card, cardType!, cardUser!, blockedCard, blockedCardUser);
-
-        return cardDomain;
+        return new OkObjectResult(columns);
     }
 
     public async Task<IActionResult> CreateWorkspaceAsync(WorkspaceBlank workspaceBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var newId = Guid.NewGuid();
+
+        var workspaceDatabase = new WorkspaceDatabase(newId, workspaceBlank, DateTime.UtcNow, userId);
+
+        var res = await _workspaceRepository.CreateWorkspaceAsync(workspaceDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> CreateWorkspaceTableAsync(WorkspaceTableBlank workspaceTableBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var newId = Guid.NewGuid();
+
+        var workspaceTableDatabase = new WorkspaceTableDatabase(newId, workspaceTableBlank, DateTime.UtcNow, userId);
+
+        var res = await _workspaceRepository.CreateWorkspaceTableAsync(workspaceTableDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> CreateTableColumnAsync(TableColumnBlank tableColumnBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var newId = Guid.NewGuid();
+
+        var tableColumnDatabase = new TableColumnDatabase(newId, tableColumnBlank);
+
+        var res = await _workspaceRepository.CreateTableColumnAsync(tableColumnDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> UpdateWorkspaceAsync(Guid id, WorkspaceBlank workspaceBlank, Guid userId)
@@ -236,7 +133,8 @@ public class WorkspaceService : IWorkspaceService
         throw new NotImplementedException();
     }
 
-    public async Task<IActionResult> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceTableBlank, Guid userId)
+    public async Task<IActionResult> UpdateWorkspaceTableAsync(Guid id, WorkspaceTableBlank workspaceTableBlank,
+        Guid userId)
     {
         throw new NotImplementedException();
     }
@@ -261,4 +159,137 @@ public class WorkspaceService : IWorkspaceService
         throw new NotImplementedException();
     }
 
+    #region private get views
+
+    private async Task<List<TableColumnDomain>?> GetTableColumnsDomainAsync(Guid tableId)
+    {
+        var columns = await _workspaceRepository.GetTableColumnsAsync(tableId);
+
+        if (!columns.Any())
+            return null;
+
+        List<TableColumnDomain> tableColumnDomains = new List<TableColumnDomain>();
+
+        foreach (var column in columns)
+        {
+            var cards = await _cardRepository.GetTableCardsAsync(column.WorkspaceTableId);
+
+            var cardDomains = cards
+                .Select(async card => await GetCardDomain(card))
+                .Select(res => res.Result);
+
+            tableColumnDomains.Add(new TableColumnDomain(column, cardDomains));
+        }
+
+        return tableColumnDomains;
+    }
+
+    private async Task<UserDomain?> GetUserDomain(Guid id)
+    {
+        var user = await _userRepository.GetUserAsync(id);
+
+        if (user == null)
+            return null;
+
+        var userDomain = new UserDomain(user);
+
+        return userDomain;
+    }
+
+    private async Task<UserDomain?> GetUserDomain(string usernameOrEmail)
+    {
+        var user = await _userRepository.GetUserAsync(usernameOrEmail);
+
+        if (user == null)
+            return null;
+
+        var userDomain = new UserDomain(user);
+
+        return userDomain;
+    }
+
+    private async Task<CardTypeDomain?> GetCardTypeDomain(Guid id)
+    {
+        var cardType = await _cardRepository.GetCardTypeAsync(id);
+
+        if (cardType == null)
+            return null;
+
+        var cardTypeDomain = new CardTypeDomain(cardType);
+
+        return cardTypeDomain;
+    }
+
+    private async Task<BlockedCardDomain?> GetBlockedCardDomain(Guid cardId)
+    {
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(cardId);
+
+        if (blockedCard == null)
+            return null;
+
+        var user = await _userRepository.GetUserAsync(blockedCard.UserId);
+
+        var blockedCardDomain = new BlockedCardDomain(blockedCard, user);
+
+        return blockedCardDomain;
+    }
+
+    private async Task<CardDomain> GetCardDomain(CardDatabase cardDatabase)
+    {
+        var cardType = await _cardRepository.GetCardTypeAsync(cardDatabase.Id);
+
+        var cardUser = await _userRepository.GetUserAsync(cardDatabase.CreatedUserId);
+
+        // blocked card
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(cardDatabase.Id);
+        // if blocked not null, get user
+        var blockedCardUser = await _userRepository.GetUserAsync(blockedCard?.UserId ?? Guid.Empty);
+
+        var cardDomain = new CardDomain(cardDatabase, cardType!, cardUser!, blockedCard, blockedCardUser);
+
+        return cardDomain;
+    }
+
+    public async Task<List<WorkspaceTableDomain>> GetWorkspaceTableDomainsAsync(Guid workspaceId)
+    {
+        var tables = await _workspaceRepository.GetWorkspaceTablesAsync(workspaceId);
+
+        List<WorkspaceTableDomain> workspaceTableDomains = new List<WorkspaceTableDomain>();
+
+        foreach (var table in tables)
+        {
+            var createdUser = await _userRepository.GetUserAsync(table.CreatedUserId);
+
+            var columns = await GetTableColumnsDomainAsync(table.Id);
+
+            WorkspaceTableDomain workspaceTableDomain = new WorkspaceTableDomain(table, createdUser, columns);
+
+            workspaceTableDomains.Add(workspaceTableDomain);
+        }
+
+        return workspaceTableDomains;
+    }
+
+    private async Task<CardDomain?> GetCardDomain(Guid id)
+    {
+        var card = await _cardRepository.GetCardAsync(id);
+
+        if (card == null)
+            return null;
+
+        var cardType = await _cardRepository.GetCardTypeAsync(card.Id);
+
+        var cardUser = await _userRepository.GetUserAsync(card.CreatedUserId);
+
+        // blocked card
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(card.Id);
+        // if blocked not null, get user
+        var blockedCardUser = await _userRepository.GetUserAsync(blockedCard?.UserId ?? Guid.Empty);
+
+        var cardDomain = new CardDomain(card, cardType!, cardUser!, blockedCard, blockedCardUser);
+
+        return cardDomain;
+    }
+
+    #endregion
 }
