@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using TF.Auth.CacheService;
 using TF.Auth.Cookie;
+using TF.Auth.Models.Tokens;
 using TF.Auth.Options;
 using TF.Auth.Tokens;
 
@@ -41,18 +42,19 @@ public class AuthManager : IAuthManager
     }
 
     // signIn
-    public async Task SignInAsync(HttpContext context, IUserModel user)
+
+    public async Task SignInAsync(HttpContext context, string user, string role)
     {
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(user, role);
 
         await SaveTokensAsync(tokens, user);
 
         CookieManager.SetTokens(context, tokens, Options.RefreshTokenLifeTimeTicks);
     }
 
-    public async Task SignInAsync(HttpResponse response, IUserModel user)
+    public async Task SignInAsync(HttpResponse response, string user, string role)
     {
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(user, role);
 
         await SaveTokensAsync(tokens, user);
 
@@ -63,7 +65,7 @@ public class AuthManager : IAuthManager
     {
         var user = TokenManager.GetUserFromClaims(claims);
 
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(claims.Claims);
 
         await SaveTokensAsync(tokens, user);
 
@@ -74,20 +76,20 @@ public class AuthManager : IAuthManager
     {
         var user = TokenManager.GetUserFromClaims(claims);
 
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(claims.Claims);
 
         await SaveTokensAsync(tokens, user);
 
         CookieManager.SetTokens(context, tokens, Options.RefreshTokenLifeTimeTicks);
     }
 
-    public async Task RefreshTokensAsync(HttpResponse response, ITokensPair tokens)
+    public async Task RefreshTokensAsync(HttpResponse response, ITokenPair token)
     {
-        var user = TokenManager.GetUserFromToken(tokens.Token);
+        var user = TokenManager.GetUserFromToken(token.Token);
 
-        var claims = TokenManager.GetPrincipalFromExpiredToken(tokens.Token);
+        var claims = TokenManager.GetPrincipalFromExpiredToken(token.Token);
 
-        var cachedTokens = await TokenCacheService.GetTokens(user, tokens.RefreshToken);
+        var cachedTokens = await TokenCacheService.GetTokensAsync(user, token.RefreshToken);
 
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
@@ -125,19 +127,34 @@ public class AuthManager : IAuthManager
         await DeleteTokensCache(tokens, user);
     }
 
-    private async Task SaveTokensAsync(ITokensPair tokens, IUserModel user)
+    private async Task SaveTokensAsync(ITokenPair token, string user)
     {
-        await TokenCacheService.SetTokens(user, tokens, Options.RefreshTokenLifeTime);
+        await TokenCacheService.SetTokensAsync(user, token, Options.RefreshTokenLifeTime);
     }
 
-    private ITokensPair CreateTokens(IUserModel user)
+    private ITokenPair CreateTokens(string user, string role)
     {
-        var claims = TokenManager.CreateIdentityClaims(user);
+        var claims = TokenManager.CreateIdentityClaims(user, role);
 
         var token = TokenManager.GenerateToken(claims);
         var refreshToken = TokenManager.GenerateRefreshToken();
 
-        var tokens = new TokensPair()
+        var tokens = new TokenPair()
+        {
+            Token = token,
+            RefreshToken = refreshToken
+        };
+
+        return tokens;
+
+    }
+
+    private ITokenPair CreateTokens(IEnumerable<Claim> claims)
+    {
+        var token = TokenManager.GenerateToken(claims);
+        var refreshToken = TokenManager.GenerateRefreshToken();
+
+        var tokens = new TokenPair()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -147,6 +164,6 @@ public class AuthManager : IAuthManager
     }
 
     // delete pair with key 'username:refreshToken' from cache
-    private Task DeleteTokensCache(ITokensPair tokens, IUserModel user) =>
-        TokenCacheService.DeleteTokens(user, tokens.RefreshToken);
+    private Task DeleteTokensCache(ITokenPair token, string user) =>
+        TokenCacheService.DeleteTokensAsync(user, token.RefreshToken);
 }

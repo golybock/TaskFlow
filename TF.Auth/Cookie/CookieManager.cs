@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using TF.Auth.Models.Tokens;
 using TF.Auth.Tokens;
 
 namespace TF.Auth.Cookie;
@@ -11,7 +12,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
     private CookieOptions DefaultOptions() =>
         new (){Secure = true, SameSite = SameSiteMode.None};
 
-    public ITokensPair? GetTokens(HttpContext context)
+    public ITokenPair? GetTokens(HttpContext context)
     {
         string? token = GetRequestCookie(context, CookieTypes.Token);
 
@@ -20,7 +21,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         if (token == null || refreshToken == null)
             return null;
 
-        var tokens = new Tokens.TokensPair()
+        var tokens = new TokenPair()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -29,7 +30,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         return tokens;
     }
 
-    public ITokensPair? GetTokens(HttpRequest request)
+    public ITokenPair? GetTokens(HttpRequest request)
     {
         string? token = GetRequestCookie(request, CookieTypes.Token);
 
@@ -38,7 +39,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         if (token == null || refreshToken == null)
             return null;
 
-        var tokens = new Tokens.TokensPair()
+        var tokens = new TokenPair()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -47,28 +48,28 @@ public class CookieManager : CookieManagerBase, ICookieManager
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, ITokensPair tokensPair, long refreshTokenLifeTime)
+    public void SetTokens(HttpContext context, ITokenPair tokenPair, long validTicks)
     {
         // validation lifetime from options
-        var expires = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
+        var expires = DateTime.UtcNow.AddTicks(validTicks);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
 
-        AppendResponseCookie(context, CookieTypes.Token, tokensPair.Token, options);
-        AppendResponseCookie(context, CookieTypes.RefreshToken, tokensPair.RefreshToken, options);
+        AppendResponseCookie(context, CookieTypes.Token, tokenPair.Token, options);
+        AppendResponseCookie(context, CookieTypes.RefreshToken, tokenPair.RefreshToken, options);
     }
 
-    public void SetTokens(HttpResponse response, ITokensPair tokensPairDomain, long refreshTokenLifeTime)
+    public void SetTokens(HttpResponse response, ITokenPair tokenPairDomain, long validTicks)
     {
         // validation lifetime from options
-        var expires = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
+        var expires = DateTime.UtcNow.AddTicks(validTicks);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
 
-        AppendResponseCookie(response, CookieTypes.Token, tokensPairDomain.Token, options);
-        AppendResponseCookie(response, CookieTypes.RefreshToken, tokensPairDomain.RefreshToken, options);
+        AppendResponseCookie(response, CookieTypes.Token, tokenPairDomain.Token, options);
+        AppendResponseCookie(response, CookieTypes.RefreshToken, tokenPairDomain.RefreshToken, options);
     }
 
     public void DeleteTokens(HttpContext context)

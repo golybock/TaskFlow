@@ -129,37 +129,37 @@ public class TokenManager : ITokenManager
         return claims;
     }
 
-    public IUserModel GetUserFromToken(string token)
+    public string GetUserFromToken(string token)
     {
         var claims = GetPrincipalFromToken(token);
 
-        var user = claims.FindFirst(ClaimTypes.Authentication)?.Value;
+        var username = claims.Identity?.Name;
 
-        return JsonSerializer.Deserialize<IUserModel>(user!)!;
+        return username!;
     }
 
-    public IUserModel GetUserFromToken(JwtSecurityToken token)
+    public string GetUserFromToken(JwtSecurityToken token)
     {
         var claims = token.Claims;
 
-        var user = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value;
+        var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-        return JsonSerializer.Deserialize<IUserModel>(user!)!;
+        return username!;
     }
 
-    public IUserModel GetUserFromClaims(ClaimsPrincipal claims)
+    public string GetUserFromClaims(ClaimsPrincipal claims)
     {
-        var user = claims.FindFirst(ClaimTypes.Authentication)?.Value;
+        var username = claims.Identity?.Name;
 
-        return JsonSerializer.Deserialize<IUserModel>(user!)!;
+        return username!;
     }
 
-    public IEnumerable<Claim> CreateIdentityClaims(IUserModel userModel)
+    public IEnumerable<Claim> CreateIdentityClaims(string user, string role)
     {
         return new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, userModel.Username),
-            new Claim(ClaimTypes.Authentication, JsonSerializer.Serialize(userModel))
+            new Claim(ClaimTypes.Name, user),
+            new Claim(ClaimTypes.Role, role)
         };
     }
 

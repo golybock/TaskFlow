@@ -25,6 +25,8 @@ public interface IRefreshCookieOptions
 
     public string? Secret { get; set; }
 
+    public string? LoginPath { get; set; }
+
     #endregion
 
     public TimeSpan RefreshTokenLifeTime { get; }

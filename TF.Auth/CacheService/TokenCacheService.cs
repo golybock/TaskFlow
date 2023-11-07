@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
-using TF.Auth.Tokens;
+using TF.Auth.Models.Tokens;
 
 namespace TF.Auth.CacheService;
 
@@ -8,16 +8,16 @@ public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
 
-    private string Key(IUserModel user, string refreshToken) => $"{user.Username}:{refreshToken}";
+    private string Key(string username, string refreshToken) => $"{username}:{refreshToken}";
 
     public TokenCacheService(IDistributedCache cache)
     {
         _cache = cache;
     }
 
-    public async Task<ITokensPair?> GetTokens(IUserModel user, string refreshToken)
+    public async Task<ITokenPair?> GetTokensAsync(string username, string refreshToken)
     {
-        var key = Key(user, refreshToken);
+        var key = Key(username, refreshToken);
 
         var tokens = await _cache.GetAsync(key);
 
@@ -26,34 +26,44 @@ public class TokenCacheService : ITokenCacheService
 
         MemoryStream stream = new MemoryStream(tokens);
 
-        return await JsonSerializer.DeserializeAsync<TokensPair>(stream);
+        return await JsonSerializer.DeserializeAsync<TokenPair>(stream);
     }
 
-    public async Task SetTokens(IUserModel user, ITokensPair tokensPair, TimeSpan refreshTokenLifeTime)
+    public async Task<ITokenPair?> GetTokensAsync(string username)
     {
-        await SetTokens(user, tokensPair, refreshTokenLifeTime.Ticks);
+        throw new NotImplementedException();
     }
 
-    public async Task SetTokens(IUserModel user, ITokensPair tokensPair, long refreshTokenLifeTime)
+    public async Task SetTokensAsync(string username, ITokenPair tokenPair, TimeSpan refreshTokenLifeTime)
     {
-        var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTime);
+        await SetTokensAsync(username, tokenPair, refreshTokenLifeTime.Ticks);
+    }
+
+    public async Task SetTokensAsync(string username, ITokenPair tokenPair, long refreshTokenLifeTimeTicks)
+    {
+        var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTimeTicks);
 
         var options = new DistributedCacheEntryOptions()
         {
             AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
         };
 
-        var key = Key(user, tokensPair.RefreshToken);
+        var key = Key(username, tokenPair.RefreshToken);
 
-        var value = JsonSerializer.Serialize(tokensPair);
+        var value = JsonSerializer.Serialize(tokenPair);
 
         await _cache.SetStringAsync(key, value, options);
     }
 
-    public async Task DeleteTokens(IUserModel user, string refreshToken)
+    public async Task DeleteTokensAsync(string username, string refreshToken)
     {
-        var key = Key(user, refreshToken);
+        var key = Key(username, refreshToken);
 
         await _cache.RemoveAsync(key);
+    }
+
+    public async Task DeleteTokensAsync(string username)
+    {
+        throw new NotImplementedException();
     }
 }

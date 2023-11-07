@@ -1,14 +1,18 @@
-﻿using TF.Auth.Tokens;
+﻿using TF.Auth.Models.Tokens;
 
 namespace TF.Auth.CacheService;
 
 public interface ITokenCacheService
 {
-    public Task<ITokensPair?> GetTokens(IUserModel user, string refreshToken);
+    public Task<ITokenPair?> GetTokensAsync(string username, string refreshToken);
 
-    public Task SetTokens(IUserModel user, ITokensPair tokensPair, TimeSpan refreshTokenLifeTime);
+    public Task<ITokenPair?> GetTokensAsync(string username);
 
-    public Task SetTokens(IUserModel user, ITokensPair tokensPair, long refreshTokenLifeTime);
+    public Task SetTokensAsync(string username, ITokenPair tokenPair, TimeSpan refreshTokenLifeTime);
 
-    public Task DeleteTokens(IUserModel user, string refreshToken);
+    public Task SetTokensAsync(string username, ITokenPair tokenPair, long refreshTokenLifeTimeTicks);
+
+    public Task DeleteTokensAsync(string username, string refreshToken);
+
+    public Task DeleteTokensAsync(string username);
 }

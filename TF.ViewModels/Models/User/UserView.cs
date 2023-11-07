@@ -1,4 +1,5 @@
-﻿using TF.Auth.Tokens;
+﻿using TF.Auth.Models.User;
+using TF.Auth.Tokens;
 using TF.DatabaseModels.Models.User;
 using TF.DomainModels.Models.User;
 using TF.Tools.Enums;

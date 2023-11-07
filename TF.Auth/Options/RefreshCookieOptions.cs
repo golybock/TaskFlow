@@ -26,6 +26,7 @@ public class RefreshCookieOptions : AuthenticationSchemeOptions, IRefreshCookieO
     public string? ValidIssuer { get; set; }
 
     public string? Secret { get; set; }
+    public string? LoginPath { get; set; }
 
     #endregion
 

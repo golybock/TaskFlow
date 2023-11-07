@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using TF.Auth.CacheService;
+using TF.Auth.Models.Tokens;
 using TF.Auth.Tokens;
 
 namespace TF.Auth.AuthManager;
@@ -13,15 +14,15 @@ public interface IAuthManager
     
     public ITokenCacheService TokenCacheService { get; protected set; }
 
-    public Task SignInAsync(HttpContext context, IUserModel user);
+    public Task SignInAsync(HttpContext context, string user, string role);
     
-    public Task SignInAsync(HttpResponse response, IUserModel user);
+    public Task SignInAsync(HttpResponse response, string user, string role);
 
     public Task SignInAsync(HttpResponse response, ClaimsPrincipal principal);
     
     public Task SignInAsync(HttpContext context, ClaimsPrincipal principal);
     
-    public Task RefreshTokensAsync(HttpResponse response, ITokensPair tokens);
+    public Task RefreshTokensAsync(HttpResponse response, ITokenPair token);
 
     public Task SignOutAsync(HttpContext context);
 

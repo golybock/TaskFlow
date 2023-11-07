@@ -15,13 +15,14 @@ public interface ITokenManager
 
     public ClaimsPrincipal GetPrincipalFromToken(string token);
 
-    public IUserModel GetUserFromToken(string token);
+    public String GetUserFromToken(string token);
 
-    public IUserModel GetUserFromToken(JwtSecurityToken token);
+    public String GetUserFromToken(JwtSecurityToken token);
 
-    public IUserModel GetUserFromClaims(ClaimsPrincipal claims);
+    public String GetUserFromClaims(ClaimsPrincipal claims);
 
-    public IEnumerable<Claim> CreateIdentityClaims(IUserModel userModel);
+
+    public IEnumerable<Claim> CreateIdentityClaims(String user, String role);
 
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
 

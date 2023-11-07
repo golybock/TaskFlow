@@ -37,6 +37,7 @@ public class AuthService : IAuthService
         // todo refactor
         var userView = new UserView(new UserDomain(user));
 
+        // todo add claims
         await _authManager.SignInAsync(context, userView);
 
         return new OkResult();
