@@ -2,9 +2,6 @@
 using TF.BlankModels.Models.Card;
 using TF.Repositories.Repositories.Card;
 using TF.Repositories.Repositories.Users;
-using TF.ViewModels.Models.Card;
-using TF.ViewModels.Models.Card.CardAttributes;
-using TF.ViewModels.Models.User;
 
 namespace TF.Services.Services.Card;
 
@@ -107,15 +104,24 @@ public class CardService : ICardService
 
     public async Task<IActionResult> DeleteCardTagsAsync(Guid cardId)
     {
-        throw new NotImplementedException();
+        var res = await _cardRepository.DeleteCardTagsAsync(cardId);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteCardTagsAsync(int id)
     {
-        throw new NotImplementedException();
+        var res = await _cardRepository.DeleteCardTagsAsync(id);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> GetBlockedCardAsync(Guid cardId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> BlockCardAsync(BlockedCardBlank blockedCardBlank, Guid userId)
     {
         throw new NotImplementedException();
     }

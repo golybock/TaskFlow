@@ -62,7 +62,7 @@ public interface ICardService
 
     public Task<IActionResult> GetBlockedCardAsync(Guid cardId);
 
-    public Task<IActionResult> BlockCardAsync(Guid cardId, Guid userId);
+    public Task<IActionResult> BlockCardAsync(BlockedCardBlank blockedCardBlank, Guid userId);
 
     public Task<IActionResult> UnBlockCardByIdAsync(Guid cardId);
 
