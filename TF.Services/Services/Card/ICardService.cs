@@ -22,11 +22,11 @@ public interface ICardService
 
     public Task<IActionResult> GetCardAsync(Guid cardId);
 
-    public Task<IActionResult> CreateCardAsync(CardBlank cardDatabase);
+    public Task<IActionResult> CreateCardAsync(CardBlank cardBlank, Guid userId);
 
-    public Task<IActionResult> UpdateCardAsync(Guid id, CardBlank cardDatabase);
+    public Task<IActionResult> UpdateCardAsync(Guid id, CardBlank cardBlank, Guid userId);
 
-    public Task<IActionResult> DeleteCardAsync(Guid id);
+    public Task<IActionResult> DeleteCardAsync(Guid id, Guid userId);
 
     #endregion
 
@@ -34,11 +34,11 @@ public interface ICardService
 
     public Task<IActionResult> GetCardCommentsAsync(Guid cardId);
 
-    public Task<IActionResult> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase);
+    public Task<IActionResult> CreateCardCommentAsync(CardCommentBlank cardCommentBlank, Guid userId);
 
-    public Task<IActionResult> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentsDatabase);
+    public Task<IActionResult> UpdateCardCommentAsync(Int32 id, CardCommentBlank cardCommentBlank, Guid userId);
 
-    public Task<IActionResult> DeleteCardCommentAsync(Int32 id);
+    public Task<IActionResult> DeleteCardCommentAsync(Int32 id, Guid userId);
 
     #endregion
 
