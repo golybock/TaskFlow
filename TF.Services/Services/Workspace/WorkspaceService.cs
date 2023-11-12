@@ -242,7 +242,7 @@ public class WorkspaceService : IWorkspaceService
         return userDomain;
     }
 
-    private async Task<CardTypeDomain?> GetCardTypeDomain(Guid id)
+    private async Task<CardTypeDomain?> GetCardTypeDomain(int id)
     {
         var cardType = await _cardRepository.GetCardTypeAsync(id);
 
@@ -270,7 +270,7 @@ public class WorkspaceService : IWorkspaceService
 
     private async Task<CardDomain> GetCardDomain(CardDatabase cardDatabase)
     {
-        var cardType = await _cardRepository.GetCardTypeAsync(cardDatabase.Id);
+        var cardType = await _cardRepository.GetCardTypeAsync(cardDatabase.CardTypeId);
 
         var cardUser = await _userRepository.GetUserAsync(cardDatabase.CreatedUserId);
 
@@ -311,7 +311,7 @@ public class WorkspaceService : IWorkspaceService
         if (card == null)
             return null;
 
-        var cardType = await _cardRepository.GetCardTypeAsync(card.Id);
+        var cardType = await _cardRepository.GetCardTypeAsync(card.CardTypeId);
 
         var cardUser = await _userRepository.GetUserAsync(card.CreatedUserId);
 

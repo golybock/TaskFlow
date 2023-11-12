@@ -159,6 +159,18 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         return await ExecuteAsync(query, parameters);
     }
 
+    public async Task<CardCommentsDatabase?> GetCardCommentAsync(int cardCommentId)
+    {
+        string query = "select * from card_comments where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardCommentId}
+        };
+
+        return await GetAsync<CardCommentsDatabase>(query, parameters);
+    }
+
     public async Task<IEnumerable<CardCommentsDatabase>> GetCardCommentsAsync(Guid cardId)
     {
         string query = "select cc.* from card_comments cc " +
@@ -197,7 +209,7 @@ public class CardRepository : NpgsqlRepository, ICardRepository
 
         var parameters = new[]
         {
-            new NpgsqlParameter {Value = cardCommentsDatabase.Id},
+            new NpgsqlParameter {Value = id},
             new NpgsqlParameter {Value = cardCommentsDatabase.Comment},
             new NpgsqlParameter {Value = cardCommentsDatabase.AttachmentUrl},
             new NpgsqlParameter {Value = cardCommentsDatabase.Deleted},
@@ -352,6 +364,19 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         return await ExecuteAsync(query, parameters);
     }
 
+    public async Task<CardTypeDatabase?> GetCardTypeAsync(int cardTypeId)
+    {
+        string query = "select * from card_type " +
+                       "where id = $1";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardTypeId}
+        };
+
+        return await GetAsync<CardTypeDatabase>(query, parameters);
+    }
+
     public async Task<bool> UnBlockCardAsync(int blockedCardId)
     {
         string query = "update blocked_card set end_block = $2 " +
@@ -365,19 +390,6 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         };
 
         return await ExecuteAsync(query, parameters);
-    }
-
-    public async Task<CardTypeDatabase?> GetCardTypeAsync(Guid cardTypeId)
-    {
-        string query = "select * from card_type " +
-                       "where id = $1";
-
-        var parameters = new[]
-        {
-            new NpgsqlParameter {Value = cardTypeId}
-        };
-
-        return await GetAsync<CardTypeDatabase>(query, parameters);
     }
 
     public async Task<IEnumerable<CardTypeDatabase>?> GetCardTypesAsync()
@@ -454,6 +466,18 @@ public class CardRepository : NpgsqlRepository, ICardRepository
         {
             new NpgsqlParameter {Value = cardId},
             new NpgsqlParameter {Value = userId}
+        };
+
+        return await ExecuteAsync(query, parameters);
+    }
+
+    public async Task<bool> DeleteCardUsersAsync(Guid cardId)
+    {
+        string query = "delete from card_users where card_id = $1 ";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter {Value = cardId}
         };
 
         return await ExecuteAsync(query, parameters);

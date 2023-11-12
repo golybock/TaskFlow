@@ -25,62 +25,124 @@ public class CardService : ICardService
 
     public async Task<IActionResult> GetTableCardsAsync(Guid tableId)
     {
-        throw new NotImplementedException();
+        var cards = await _cardRepository.GetTableCardsAsync(tableId);
+
+        var cardDomains = cards
+            .Select(async card => await GetCardDomain(card))
+            .Select(res => res.Result);
+
+        var cardViews = cardDomains.Select(c => new CardView(c));
+
+        return new OkObjectResult(cardViews);
     }
 
-    public async Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<int> cardTypeId)
+    public async Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<int> cardTypeIds)
     {
-        throw new NotImplementedException();
+        var cards = await _cardRepository.GetTableCardsAsync(tableId, cardTypeIds);
+
+        var cardDomains = cards
+            .Select(async card => await GetCardDomain(card))
+            .Select(res => res.Result);
+
+        var cardViews = cardDomains.Select(c => new CardView(c));
+
+        return new OkObjectResult(cardViews);
     }
 
-    public async Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<int> cardTypeIds, IEnumerable<Guid> userIds)
+    public async Task<IActionResult> GetTableCardsAsync(Guid tableId, IEnumerable<int> cardTypeIds,
+        IEnumerable<Guid> userIds)
     {
-        throw new NotImplementedException();
+        var cards = await _cardRepository.GetTableCardsAsync(tableId, cardTypeIds, userIds);
+
+        var cardDomains = cards
+            .Select(async card => await GetCardDomain(card))
+            .Select(res => res.Result);
+
+        var cardViews = cardDomains.Select(c => new CardView(c));
+
+        return new OkObjectResult(cardViews);
     }
 
     public async Task<IActionResult> GetWorkspaceCardsAsync(Guid workspaceId)
     {
-        throw new NotImplementedException();
+        var cards = await _cardRepository.GetWorkspaceCardsAsync(workspaceId);
+
+        var cardDomains = cards
+            .Select(async card => await GetCardDomain(card))
+            .Select(res => res.Result);
+
+        var cardViews = cardDomains.Select(c => new CardView(c));
+
+        return new OkObjectResult(cardViews);
     }
 
     public async Task<IActionResult> GetUserCardsAsync(Guid userId)
     {
-        throw new NotImplementedException();
+        var cards = await _cardRepository.GetUserCardsAsync(userId);
+
+        var cardDomains = cards
+            .Select(async card => await GetCardDomain(card))
+            .Select(res => res.Result);
+
+        var cardViews = cardDomains.Select(c => new CardView(c));
+
+        return new OkObjectResult(cardViews);
     }
 
     public async Task<IActionResult> GetCardAsync(Guid cardId)
     {
-        throw new NotImplementedException();
+        var cardDatabase = await _cardRepository.GetCardAsync(cardId);
+
+        if (cardDatabase == null)
+            return new NotFoundResult();
+
+        var cardDomain = await GetCardDomain(cardDatabase);
+
+        var cardView = new CardView(cardDomain);
+
+        return new OkObjectResult(cardView);
     }
 
     public async Task<IActionResult> CreateCardAsync(CardBlank cardBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var cardDatabase = new CardDatabase(Guid.NewGuid(), cardBlank, DateTime.UtcNow, userId);
+
+        var res = await _cardRepository.CreateCardAsync(cardDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> UpdateCardAsync(Guid id, CardBlank cardBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var cardDatabase = await _cardRepository.GetCardAsync(id);
+
+        if (cardDatabase == null)
+            return new NotFoundResult();
+
+        cardDatabase.Header = cardBlank.Header;
+        cardDatabase.Description = cardBlank.Description;
+        cardDatabase.CardTypeId = cardBlank.CardTypeId;
+        cardDatabase.TableColumnId = cardBlank.TableColumnId;
+        cardDatabase.Deadline = cardBlank.Deadline;
+
+        var res = await _cardRepository.UpdateCardAsync(id, cardDatabase);
+
+        // card tags
+        await DeleteCardTagsAsync(id);
+
+        await AddTagsToCardAsync(id, cardBlank.CardTags);
+
+        // card users
+        await DeleteCardUsersAsync(id);
+
+        await AddCardUsersAsync(id, cardBlank.CardUsers);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteCardAsync(Guid id, Guid userId)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> CreateCardAsync(CardBlank cardDatabase)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> UpdateCardAsync(Guid id, CardBlank cardDatabase)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> DeleteCardAsync(Guid id)
-    {
-        var res =  await _cardRepository.DeleteCardAsync(id);
+        var res = await _cardRepository.DeleteCardAsync(id);
 
         return res ? new OkResult() : new BadRequestResult();
     }
@@ -96,17 +158,34 @@ public class CardService : ICardService
 
     public async Task<IActionResult> CreateCardCommentAsync(CardCommentBlank cardCommentBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var cardCommentsDatabase = new CardCommentsDatabase(cardCommentBlank, userId);
+
+        var res = await _cardRepository.CreateCardCommentAsync(cardCommentsDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
+    // todo block available for users
     public async Task<IActionResult> UpdateCardCommentAsync(int id, CardCommentBlank cardCommentBlank, Guid userId)
     {
-        throw new NotImplementedException();
+        var cardCommentDatabase = await _cardRepository.GetCardCommentAsync(id);
+
+        if (cardCommentDatabase == null)
+            return new NotFoundResult();
+
+        cardCommentDatabase.Comment = cardCommentBlank.Comment;
+        cardCommentDatabase.AttachmentUrl = cardCommentBlank.AttachmentUrl;
+
+        var res = await _cardRepository.UpdateCardCommentAsync(id, cardCommentDatabase);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteCardCommentAsync(int id, Guid userId)
     {
-        throw new NotImplementedException();
+        var res = await _cardRepository.DeleteCardCommentAsync(id);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     private async Task<IEnumerable<CardCommentDomain>> GetCardCommentsDomain(Guid cardId)
@@ -127,39 +206,55 @@ public class CardService : ICardService
         return cardCommentDomains;
     }
 
-    public async Task<IActionResult> CreateCardCommentAsync(CardCommentBlank cardCommentsDatabase)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> UpdateCardCommentAsync(int id, CardCommentBlank cardCommentsDatabase)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> DeleteCardCommentAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IActionResult> GetCardTagsAsync(Guid cardId)
     {
-        throw new NotImplementedException();
+        var tags = await GetCardTagsDomain(cardId);
+
+        var tagsView = tags.Select(c => new TagView(c));
+
+        return new OkObjectResult(tagsView);
     }
 
     public async Task<IActionResult> GetTagsAsync()
     {
-        throw new NotImplementedException();
+        var tags = await GetTagsDomain();
+
+        var tagsView = tags.Select(c => new TagView(c));
+
+        return new OkObjectResult(tagsView);
+    }
+
+    private async Task<IEnumerable<TagDomain>> GetCardTagsDomain(Guid cardId)
+    {
+        var tagsDatabase = await _cardRepository.GetCardTagsAsync(cardId);
+
+        return tagsDatabase.Select(tag => new TagDomain(tag));
+    }
+
+    private async Task<IEnumerable<TagDomain>> GetTagsDomain()
+    {
+        var tagsDatabase = await _cardRepository.GetTagsAsync();
+
+        return tagsDatabase.Select(tag => new TagDomain(tag));
     }
 
     public async Task<IActionResult> AddTagToCardAsync(Guid cardId, int tagId)
     {
-        throw new NotImplementedException();
+        var card = await _cardRepository.GetCardAsync(cardId);
+
+        if (card == null)
+            return new NotFoundResult();
+
+        var res = await _cardRepository.AddTagToCardAsync(cardId, tagId);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> AddTagsToCardAsync(Guid cardId, IEnumerable<int> tagId)
+    public async Task<IActionResult> AddTagsToCardAsync(Guid cardId, IEnumerable<int> tagIds)
     {
-        throw new NotImplementedException();
+        var res = await _cardRepository.AddTagsToCardAsync(cardId, tagIds);
+
+        return res ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> DeleteCardTagsAsync(Guid cardId)
@@ -188,20 +283,6 @@ public class CardService : ICardService
         return new OkObjectResult(blockedCardView);
     }
 
-    private async Task<BlockedCardDomain?> GetBlockedCardDomain(Guid cardId)
-    {
-        var blockedCardDatabase = await _cardRepository.GetBlockedCardAsync(cardId);
-
-        if (blockedCardDatabase == null)
-            return null;
-
-        var user = await _userRepository.GetUserAsync(blockedCardDatabase.UserId);
-
-        var blockedCardDomain = new BlockedCardDomain(blockedCardDatabase, user);
-
-        return blockedCardDomain;
-    }
-
     public async Task<IActionResult> BlockCardAsync(BlockedCardBlank blockedCardBlank, Guid userId)
     {
         var blockCardDatabase = new BlockedCardDatabase(Guid.NewGuid(), blockedCardBlank, userId);
@@ -227,12 +308,47 @@ public class CardService : ICardService
 
     public async Task<IActionResult> GetCardTypeAsync(int cardTypeId)
     {
-        throw new NotImplementedException();
+        var cardType = await GetCardTypeDomain(cardTypeId);
+
+        if (cardType == null)
+            return new NotFoundResult();
+
+        var cardTypeView = new CardTypeView(cardType);
+
+        return new OkObjectResult(cardTypeView);
     }
 
     public async Task<IActionResult> GetCardTypesAsync()
     {
-        throw new NotImplementedException();
+        var cardTypeDomains = await GetCardTypesDomain();
+
+        if (!cardTypeDomains.Any())
+            return new NotFoundResult();
+
+        var cardTypeViews = cardTypeDomains.Select(cardTypeDomain => new CardTypeView(cardTypeDomain));
+
+        return new OkObjectResult(cardTypeViews);
+    }
+
+    private async Task<CardTypeDomain?> GetCardTypeDomain(int cardTypeId)
+    {
+        var cardType = await _cardRepository.GetCardTypeAsync(cardTypeId);
+
+        if (cardType == null)
+            return null;
+
+        var cardTypeDomain = new CardTypeDomain(cardType);
+
+        return cardTypeDomain;
+    }
+
+    private async Task<IEnumerable<CardTypeDomain>> GetCardTypesDomain()
+    {
+        var cardTypes = await _cardRepository.GetCardTypesAsync();
+
+        var cardTypesDomain = cardTypes.Select(cardType => new CardTypeDomain(cardType));
+
+        return cardTypesDomain;
     }
 
     public async Task<IActionResult> CreateCardTypeAsync(CardTypeBlank cardTypeBlank)
@@ -242,6 +358,36 @@ public class CardService : ICardService
         var res = await _cardRepository.CreateCardTypeAsync(cardDatabase);
 
         return res ? new OkResult() : new BadRequestResult();
+    }
+
+    private async Task<BlockedCardDomain?> GetBlockedCardDomain(Guid cardId)
+    {
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(cardId);
+
+        if (blockedCard == null)
+            return null;
+
+        var user = await _userRepository.GetUserAsync(blockedCard.UserId);
+
+        var blockedCardDomain = new BlockedCardDomain(blockedCard, user);
+
+        return blockedCardDomain;
+    }
+
+    private async Task<CardDomain> GetCardDomain(CardDatabase cardDatabase)
+    {
+        var cardType = await _cardRepository.GetCardTypeAsync(cardDatabase.CardTypeId);
+
+        var cardUser = await _userRepository.GetUserAsync(cardDatabase.CreatedUserId);
+
+        // blocked card
+        var blockedCard = await _cardRepository.GetBlockedCardAsync(cardDatabase.Id);
+        // if blocked not null, get user
+        var blockedCardUser = await _userRepository.GetUserAsync(blockedCard?.UserId ?? Guid.Empty);
+
+        var cardDomain = new CardDomain(cardDatabase, cardType!, cardUser!, blockedCard, blockedCardUser);
+
+        return cardDomain;
     }
 
     public async Task<IActionResult> GetCardUsersAsync(Guid cardId)
@@ -308,6 +454,13 @@ public class CardService : ICardService
     public async Task<IActionResult> DeleteCardUserAsync(Guid cardId, Guid userId)
     {
         var res = await _cardRepository.DeleteCardUserAsync(cardId, userId);
+
+        return res ? new OkResult() : new BadRequestResult();
+    }
+
+    public async Task<IActionResult> DeleteCardUsersAsync(Guid cardId)
+    {
+        var res = await _cardRepository.DeleteCardUsersAsync(cardId);
 
         return res ? new OkResult() : new BadRequestResult();
     }

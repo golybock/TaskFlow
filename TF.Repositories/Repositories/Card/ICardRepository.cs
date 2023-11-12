@@ -30,6 +30,8 @@ public interface ICardRepository
 
     #region CardComment
 
+    public Task<CardCommentsDatabase?> GetCardCommentAsync(int cardCommentId);
+
     public Task<IEnumerable<CardCommentsDatabase>> GetCardCommentsAsync(Guid cardId);
 
     public Task<Boolean> CreateCardCommentAsync(CardCommentsDatabase cardCommentsDatabase);
@@ -70,9 +72,9 @@ public interface ICardRepository
 
     #region CardType
 
-    public Task<CardTypeDatabase?> GetCardTypeAsync(Guid cardTypeId);
+    public Task<CardTypeDatabase?> GetCardTypeAsync(int cardTypeId);
 
-    public Task<IEnumerable<CardTypeDatabase>?> GetCardTypesAsync();
+    public Task<IEnumerable<CardTypeDatabase>> GetCardTypesAsync();
 
     public Task<Boolean> CreateCardTypeAsync(CardTypeDatabase cardTypeDatabase);
 
@@ -87,6 +89,8 @@ public interface ICardRepository
     public Task<Boolean> AddCardUsersAsync(Guid cardId, IEnumerable<Guid> userIds);
 
     public Task<Boolean> DeleteCardUserAsync(Guid cardId, Guid userId);
+
+    public Task<Boolean> DeleteCardUsersAsync(Guid cardId);
 
     public Task<Boolean> DeleteCardUserAsync(Int32 id);
 

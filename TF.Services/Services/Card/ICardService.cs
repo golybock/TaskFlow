@@ -90,6 +90,8 @@ public interface ICardService
 
     public Task<IActionResult> DeleteCardUserAsync(Guid cardId, Guid userId);
 
+    public Task<IActionResult> DeleteCardUsersAsync(Guid cardId);
+
     public Task<IActionResult> DeleteCardUserAsync(Int32 id);
 
     #endregion
