@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TF.BlankModels.Models.Card;
-using TF.ViewModels.Models.Card;
-using TF.ViewModels.Models.Card.CardAttributes;
-using TF.ViewModels.Models.User;
 
 namespace TF.Services.Services.Card;
 

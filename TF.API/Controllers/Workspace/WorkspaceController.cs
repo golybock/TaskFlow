@@ -4,7 +4,7 @@ using TF.BlankModels.Models.Workspace;
 using TF.Services.Services.Workspace;
 using ControllerBase = TF.Auth.Controller.ControllerBase;
 
-namespace TF.API.Controllers;
+namespace TF.API.Controllers.Workspace;
 
 [ApiController, Authorize]
 [Route("api/[controller]")]
