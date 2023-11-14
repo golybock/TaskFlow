@@ -1,11 +1,12 @@
 ﻿using Npgsql;
 using TF.DatabaseModels.Models.Workspace;
+using TF.Repositories.Options;
 
 namespace TF.Repositories.Repositories.Workspace;
 
 public class WorkspaceRepository : NpgsqlRepository, IWorkspaceRepository
 {
-    public WorkspaceRepository(string connectionString) : base(connectionString) { }
+    public WorkspaceRepository(DatabaseOptions databaseOptions) : base(databaseOptions) { }
 
     public async Task<WorkspaceDatabase?> GetWorkspaceAsync(Guid id)
     {

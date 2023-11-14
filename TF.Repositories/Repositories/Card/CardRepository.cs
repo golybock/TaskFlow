@@ -2,12 +2,13 @@
 using TF.DatabaseModels.Models.Card;
 using TF.DatabaseModels.Models.Card.CardAttributes;
 using TF.DatabaseModels.Models.User;
+using TF.Repositories.Options;
 
 namespace TF.Repositories.Repositories.Card;
 
 public class CardRepository : NpgsqlRepository, ICardRepository
 {
-    public CardRepository(string connectionString) : base(connectionString) { }
+    public CardRepository(DatabaseOptions databaseOptions) : base(databaseOptions) { }
 
     public async Task<IEnumerable<CardDatabase>> GetTableCardsAsync(Guid tableId)
     {

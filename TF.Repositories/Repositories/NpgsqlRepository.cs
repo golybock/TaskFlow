@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using TF.Repositories.Options;
 using TF.Repositories.Reader;
 
 namespace TF.Repositories.Repositories;
@@ -7,9 +8,9 @@ public class NpgsqlRepository
 {
     private readonly string? _connectionString;
 
-    public NpgsqlRepository(string connectionString)
+    public NpgsqlRepository(DatabaseOptions databaseOptions)
     {
-        _connectionString = connectionString;
+        _connectionString = databaseOptions.ConnectionString;
     }
 
     protected NpgsqlConnection GetConnection() =>

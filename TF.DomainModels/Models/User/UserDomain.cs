@@ -42,6 +42,6 @@ public class UserDomain
         Email = userDatabase.Email;
         Letters = userDatabase.Letters;
         ImageUrl = userDatabase.ImageUrl;
-        Role = userDatabase.RoleId;
+        Role = (Role) userDatabase.RoleId;
     }
 }

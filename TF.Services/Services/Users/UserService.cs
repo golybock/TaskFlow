@@ -89,7 +89,7 @@ public class UserService : IUserService
         user.FullName = userBlank.FullName;
         user.Letters = letters;
         user.Email = userBlank.Email;
-        user.RoleId = userBlank.Role;
+        user.RoleId = (int) userBlank.Role;
         user.ImageUrl = userBlank.ImageUrl;
 
         var res = await _userRepository.UpdateUserAsync(id, user);
@@ -109,7 +109,7 @@ public class UserService : IUserService
         user.FullName = userBlank.FullName;
         user.Letters = letters;
         user.Email = userBlank.Email;
-        user.RoleId = userBlank.Role;
+        user.RoleId = (int) userBlank.Role;
         user.ImageUrl = userBlank.ImageUrl;
 
         var res = await _userRepository.UpdateUserAsync(usernameOrEmail, user);

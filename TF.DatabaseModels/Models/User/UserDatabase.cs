@@ -19,7 +19,7 @@ public class UserDatabase
 
     public String? ImageUrl { get; set; }
 
-    public Role RoleId { get; set; }
+    public Int32 RoleId { get; set; }
 
     public Boolean Deleted { get; set; }
 
@@ -37,7 +37,7 @@ public class UserDatabase
         Password = password;
         Letters = letters;
         ImageUrl = imageUrl;
-        RoleId = roleId;
+        RoleId = (int) roleId;
         Deleted = deleted;
     }
 
@@ -51,6 +51,6 @@ public class UserDatabase
         Password = password;
         Letters = letters;
         ImageUrl = userBlank.ImageUrl;
-        RoleId = role;
+        RoleId = (int) role;
     }
 }

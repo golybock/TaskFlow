@@ -3,6 +3,7 @@ using TF.Auth.AuthManager;
 using TF.Auth.CacheService;
 using TF.Auth.Options;
 using TF.Auth.Tokens;
+using TF.Repositories.Options;
 using TF.Repositories.Repositories;
 using TF.Repositories.Repositories.Card;
 using TF.Repositories.Repositories.Users;
@@ -35,8 +36,10 @@ RefreshCookieOptions GetOptions(IConfiguration configuration)
     return new RefreshCookieOptions()
     {
         Secret = configuration["RefreshCookieOptions:Secret"],
-        TokenLifeTimeTicks = int.Parse(configuration["RefreshCookieOptions:TokenValidityInMinutes"]!),
-        RefreshTokenLifeTimeTicks = Int32.Parse(configuration["RefreshCookieOptions:RefreshTokenValidityInDays"]!),
+        TokenLifeTimeTicks = TimeSpan
+            .FromMinutes(int.Parse(configuration["RefreshCookieOptions:TokenValidityInMinutes"]!)).Ticks,
+        RefreshTokenLifeTimeTicks = TimeSpan
+            .FromMinutes(Int32.Parse(configuration["RefreshCookieOptions:RefreshTokenValidityInDays"]!)).Ticks,
         ValidIssuer = configuration["RefreshCookieOptions:ValidIssuer"],
         ValidAudience = configuration["RefreshCookieOptions:ValidAudience"],
         ValidateIssuer = true,
@@ -61,11 +64,13 @@ builder.Services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
 // auth options
 builder.Services.AddSingleton<IRefreshCookieOptions>(_ => GetOptions(builder.Configuration));
 builder.Services.AddSingleton<RefreshCookieOptions>(_ => GetOptions(builder.Configuration));
+
 #region db
 
 var connectionString = builder.Configuration.GetConnectionString("task_flow");
+var options = new DatabaseOptions() {ConnectionString = connectionString!};
 
-builder.Services.AddSingleton<NpgsqlRepository>(_ => new NpgsqlRepository(connectionString!));
+builder.Services.AddSingleton<DatabaseOptions>(_ => options);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, WorkspaceRepository>();

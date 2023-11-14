@@ -1,11 +1,12 @@
 ﻿using Npgsql;
 using TF.DatabaseModels.Models.User;
+using TF.Repositories.Options;
 
 namespace TF.Repositories.Repositories.Users;
 
 public class UserRepository : NpgsqlRepository, IUserRepository
 {
-    public UserRepository(string connectionString) : base(connectionString) { }
+    public UserRepository(DatabaseOptions databaseOptions) : base(databaseOptions) { }
 
     public async Task<UserDatabase?> GetUserAsync(Guid id)
     {
@@ -89,7 +90,7 @@ public class UserRepository : NpgsqlRepository, IUserRepository
             new NpgsqlParameter{Value = userDatabase.Password},
             new NpgsqlParameter{Value = userDatabase.Letters},
             new NpgsqlParameter{Value = userDatabase.ImageUrl},
-            new NpgsqlParameter{Value = (object) userDatabase.RoleId}
+            new NpgsqlParameter{Value = userDatabase.RoleId}
         };
 
         return await ExecuteAsync(query, parameters);
